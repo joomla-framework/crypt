@@ -7,7 +7,7 @@
 namespace Joomla\Crypt\Tests;
 
 use Joomla\Crypt\Key;
-use Joomla\Crypt\Cipher_3DES;
+use Joomla\Crypt\Cipher\Cipher_3DES;
 
 /**
  * Test class for JCryptCipher3DES.
