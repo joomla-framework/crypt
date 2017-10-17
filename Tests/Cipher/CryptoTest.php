@@ -27,11 +27,7 @@ class CryptoTest extends TestCase
 	public static function setUpBeforeClass()
 	{
 		// Only run the test if the environment supports it.
-		try
-		{
-			RuntimeTests::runtimeTest();
-		}
-		catch (EnvironmentIsBrokenException $e)
+		if (!CryptoCipher::isSupported())
 		{
 			self::markTestSkipped('The environment cannot safely perform encryption with this cipher.');
 		}

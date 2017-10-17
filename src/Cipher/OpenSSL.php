@@ -35,6 +35,20 @@ class OpenSSL implements CipherInterface
 	private $method = 'aes-128-cbc';
 
 	/**
+	 * Instantiate the cipher.
+	 *
+	 * @param   string  $iv      The initialisation vector to use
+	 * @param   string  $method  The encryption method to use
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function __construct(string $iv, string $method)
+	{
+		$this->iv     = $iv;
+		$this->method = $method;
+	}
+
+	/**
 	 * Method to decrypt a data string.
 	 *
 	 * @param   string  $data  The encrypted string to decrypt.
@@ -117,54 +131,14 @@ class OpenSSL implements CipherInterface
 	}
 
 	/**
-	 * Get the initialisation vector.
+	 * Check if the cipher is supported in this environment.
 	 *
-	 * @return  string
-	 *
-	 * @since   __DEPLOY_VERSION__
-	 */
-	public function getIv(): string
-	{
-		return $this->iv;
-	}
-
-	/**
-	 * Get the encryption method.
-	 *
-	 * @return  string
+	 * @return  boolean
 	 *
 	 * @since   __DEPLOY_VERSION__
 	 */
-	public function getMethod(): string
+	public static function isSupported(): bool
 	{
-		return $this->method;
-	}
-
-	/**
-	 * Set the initialisation vector.
-	 *
-	 * @param   string  $iv  The initialisation vector to use
-	 *
-	 * @return  void
-	 *
-	 * @since   __DEPLOY_VERSION__
-	 */
-	public function setIv(string $iv)
-	{
-		$this->iv = $iv;
-	}
-
-	/**
-	 * Set the encryption method.
-	 *
-	 * @param   string  $method  The encryption method to use
-	 *
-	 * @return  void
-	 *
-	 * @since   __DEPLOY_VERSION__
-	 */
-	public function setMethod(string $method)
-	{
-		$this->method = $method;
+		return extension_loaded('openssl');
 	}
 }
