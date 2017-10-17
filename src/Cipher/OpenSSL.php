@@ -24,7 +24,7 @@ class OpenSSL implements CipherInterface
 	 * @var    string
 	 * @since  __DEPLOY_VERSION__
 	 */
-	private $iv = '1234567890123456';
+	private $iv;
 
 	/**
 	 * Method to use for encryption.
@@ -32,7 +32,7 @@ class OpenSSL implements CipherInterface
 	 * @var    string
 	 * @since  __DEPLOY_VERSION__
 	 */
-	private $method = 'aes-128-cbc';
+	private $method;
 
 	/**
 	 * Instantiate the cipher.
