@@ -26,11 +26,19 @@
     "target-dir": "Joomla/Crypt",
     "autoload": {
         "psr-0": {
-            "Joomla\\Crypt": ""
+            "Joomla\\Crypt\\Cipher_": "Cipher/"
+        },
+        "psr-4": {
+            "Joomla\\Crypt\\": ""
         },
         "files": [
             "lib/Crypto.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Joomla\\Crypt\\Tests\\": "Tests/"
+        }
     },
     "minimum-stability": "dev",
     "extra": {
