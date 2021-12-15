@@ -21,16 +21,16 @@ steps:
   image: joomlaprojects/docker-images:php7.4
   commands:
   - vendor/bin/phpcs --config-set installed_paths vendor/joomla/coding-standards
-  - vendor/bin/phpcs -p --report=full --extensions=php --standard=ruleset.xml src/
+  - vendor/bin/phpcs -p --report=full --extensions=php --standard=ruleset.xml ./
 
 - name: phpmd
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - vendor/bin/phpmd src text cleancode
-  - vendor/bin/phpmd src text codesize
-  - vendor/bin/phpmd src text controversial
-  - vendor/bin/phpmd src text design
-  - vendor/bin/phpmd src text unusedcode
+  - vendor/bin/phpmd . text cleancode
+  - vendor/bin/phpmd . text codesize
+  - vendor/bin/phpmd . text controversial
+  - vendor/bin/phpmd . text design
+  - vendor/bin/phpmd . text unusedcode
   failure: ignore
 
 - name: phpstan
@@ -367,6 +367,6 @@ volumes:
 
 ---
 kind: signature
-hmac: 4a3cc9840ba4e912a59d2adeade299fe72d1410a7c8a15d1d769c4717f0f5d1d
+hmac: 4c192b3c3bdd310052472df9890664233ef7bafd337c413a9de000e7c295e776
 
 ...

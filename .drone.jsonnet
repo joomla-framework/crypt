@@ -61,7 +61,7 @@ local pipeline(name, phpversion, params) = {
                 depends: [ "composer" ],
                 commands: [
                     "vendor/bin/phpcs --config-set installed_paths vendor/joomla/coding-standards",
-                    "vendor/bin/phpcs -p --report=full --extensions=php --standard=ruleset.xml src/"
+                    "vendor/bin/phpcs -p --report=full --extensions=php --standard=ruleset.xml ./"
                 ]
             },
             {
@@ -70,11 +70,11 @@ local pipeline(name, phpversion, params) = {
                 depends: [ "composer" ],
                 failure: "ignore",
                 commands: [
-                    "vendor/bin/phpmd src text cleancode",
-                    "vendor/bin/phpmd src text codesize",
-                    "vendor/bin/phpmd src text controversial",
-                    "vendor/bin/phpmd src text design",
-                    "vendor/bin/phpmd src text unusedcode",
+                    "vendor/bin/phpmd . text cleancode",
+                    "vendor/bin/phpmd . text codesize",
+                    "vendor/bin/phpmd . text controversial",
+                    "vendor/bin/phpmd . text design",
+                    "vendor/bin/phpmd . text unusedcode",
                 ]
             },
             {
