@@ -69,8 +69,8 @@ steps:
   image: joomlaprojects/docker-images:php5.3
   commands:
   - php -v
-  - if [[ "5.3" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "5.3" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "5.3" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "5.3" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable --prefer-lowest
   volumes:
   - name: composer-cache
@@ -99,8 +99,8 @@ steps:
   image: joomlaprojects/docker-images:php5.3
   commands:
   - php -v
-  - if [[ "5.3" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "5.3" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "5.3" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "5.3" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -129,8 +129,8 @@ steps:
   image: joomlaprojects/docker-images:php5.4
   commands:
   - php -v
-  - if [[ "5.4" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "5.4" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "5.4" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "5.4" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -159,8 +159,8 @@ steps:
   image: joomlaprojects/docker-images:php5.5
   commands:
   - php -v
-  - if [[ "5.5" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "5.5" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "5.5" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "5.5" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -189,8 +189,8 @@ steps:
   image: joomlaprojects/docker-images:php5.6
   commands:
   - php -v
-  - if [[ "5.6" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "5.6" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "5.6" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "5.6" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -219,8 +219,8 @@ steps:
   image: joomlaprojects/docker-images:php7.0
   commands:
   - php -v
-  - if [[ "7.0" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "7.0" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "7.0" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "7.0" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -249,8 +249,8 @@ steps:
   image: joomlaprojects/docker-images:php7.1
   commands:
   - php -v
-  - if [[ "7.1" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "7.1" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "7.1" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "7.1" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -279,8 +279,8 @@ steps:
   image: joomlaprojects/docker-images:php7.2
   commands:
   - php -v
-  - if [[ "7.2" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "7.2" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "7.2" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "7.2" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -309,8 +309,8 @@ steps:
   image: joomlaprojects/docker-images:php7.3
   commands:
   - php -v
-  - if [[ "7.3" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "7.3" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "7.3" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "7.3" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -339,8 +339,8 @@ steps:
   image: joomlaprojects/docker-images:php7.4
   commands:
   - php -v
-  - if [[ "7.4" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "7.4" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "7.4" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "7.4" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --prefer-stable
   volumes:
   - name: composer-cache
@@ -369,8 +369,8 @@ steps:
   image: joomlaprojects/docker-images:php8.0
   commands:
   - php -v
-  - if [[ "8.0" == "5.4" ]]; then composer config -g -- disable-tls false; fi
-  - if [[ "8.0" == "5.5" ]]; then composer config -g -- disable-tls false; fi
+  - if test "8.0" == "5.4"; then composer config -g -- disable-tls false; fi
+  - if test "8.0" == "5.5"; then composer config -g -- disable-tls false; fi
   - composer update --ignore-platform-reqs
   volumes:
   - name: composer-cache
@@ -389,6 +389,6 @@ volumes:
 
 ---
 kind: signature
-hmac: c6e43695ec21d8a0cf568cdb7ab6902639ed39de72b7f4bd13df638af0e22b75
+hmac: 7a056579ceefd3d7e8755a63a75d4e5e5a5cfcfa9a7fa678229d8e309c60d4d2
 
 ...
