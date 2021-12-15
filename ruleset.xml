@@ -11,11 +11,15 @@
     <exclude-pattern>*/.github/*</exclude-pattern>
 
     <!-- Exclude 3rd party libraries. -->
-    <exclude-pattern>*/lib/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
 
     <rule ref="Joomla">
-        <!-- Required due to having mcrypt supporing code, fixed in 2.0 -->
-        <exclude name="Generic.PHP.DeprecatedFunctions"/>
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+    <rule ref="Joomla.Classes.InstantiateNewClasses">
+        <properties>
+            <property name="shortArraySyntax" value="true"/>
+        </properties>
     </rule>
 </ruleset>
