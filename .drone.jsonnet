@@ -83,7 +83,7 @@ local pipeline(name, phpversion, params) = {
                 depends: [ "composer" ],
                 failure: "ignore",
                 commands: [
-                    "vendor/bin/phpstan analyse src",
+                    "vendor/bin/phpstan analyse .",
                 ]
             },
             {
@@ -92,7 +92,7 @@ local pipeline(name, phpversion, params) = {
                 depends: [ "composer" ],
                 failure: "ignore",
                 commands: [
-                    "phploc src",
+                    "phploc .",
                 ]
             },
             {
@@ -101,7 +101,7 @@ local pipeline(name, phpversion, params) = {
                 depends: [ "composer" ],
                 failure: "ignore",
                 commands: [
-                    "phpcpd src",
+                    "phpcpd .",
                 ]
             }
         ]

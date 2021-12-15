@@ -36,19 +36,19 @@ steps:
 - name: phpstan
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - vendor/bin/phpstan analyse src
+  - vendor/bin/phpstan analyse .
   failure: ignore
 
 - name: phploc
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - phploc src
+  - phploc .
   failure: ignore
 
 - name: phpcpd
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - phpcpd src
+  - phpcpd .
   failure: ignore
 
 volumes:
@@ -367,6 +367,6 @@ volumes:
 
 ---
 kind: signature
-hmac: 2b4bde94df26b3b2c4aae508c12330c98199b3346df5629d371940eb8f83afcb
+hmac: 4a3cc9840ba4e912a59d2adeade299fe72d1410a7c8a15d1d769c4717f0f5d1d
 
 ...
