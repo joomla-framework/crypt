@@ -18,8 +18,6 @@ local composer(phpversion, params) = {
     volumes: volumes,
     commands: [
         "php -v",
-        "if test \"" + phpversion + "\" == \"5.4\"; then composer config disable-tls true; fi",
-        "if test \"" + phpversion + "\" == \"5.5\"; then composer config disable-tls true; fi",
         "composer update " + params
     ]
 };
