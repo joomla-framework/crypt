@@ -11,7 +11,7 @@ steps:
   image: joomlaprojects/docker-images:php7.4
   commands:
   - php -v
-  - composer update
+  - composer update --prefer-stable
   - composer require phpmd/phpmd phpstan/phpstan
   volumes:
   - name: composer-cache
@@ -26,29 +26,29 @@ steps:
 - name: phpmd
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - vendor/bin/phpmd src text cleancode
-  - vendor/bin/phpmd src text codesize
-  - vendor/bin/phpmd src text controversial
-  - vendor/bin/phpmd src text design
-  - vendor/bin/phpmd src text unusedcode
+  - vendor/bin/phpmd . text cleancode
+  - vendor/bin/phpmd . text codesize
+  - vendor/bin/phpmd . text controversial
+  - vendor/bin/phpmd . text design
+  - vendor/bin/phpmd . text unusedcode
   failure: ignore
 
 - name: phpstan
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - vendor/bin/phpstan analyse src
+  - vendor/bin/phpstan analyse .
   failure: ignore
 
 - name: phploc
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - phploc src
+  - phploc .
   failure: ignore
 
 - name: phpcpd
   image: joomlaprojects/docker-images:php7.4
   commands:
-  - phpcpd src
+  - phpcpd .
   failure: ignore
 
 volumes:
@@ -70,7 +70,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable --prefer-lowest
-  - composer update phpunit/phpunit-mock-objects
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -99,74 +98,12 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
 
 - name: PHPUnit
   image: joomlaprojects/docker-images:php5.3
-  commands:
-  - vendor/bin/phpunit
-
-volumes:
-- name: composer-cache
-  host:
-    path: /tmp/composer-cache
-
----
-kind: pipeline
-name: PHP 5.4
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: composer
-  image: joomlaprojects/docker-images:php5.4
-  commands:
-  - php -v
-  - composer update --prefer-stable
-  - ""
-  - ""
-  volumes:
-  - name: composer-cache
-    path: /tmp/composer-cache
-
-- name: PHPUnit
-  image: joomlaprojects/docker-images:php5.4
-  commands:
-  - vendor/bin/phpunit
-
-volumes:
-- name: composer-cache
-  host:
-    path: /tmp/composer-cache
-
----
-kind: pipeline
-name: PHP 5.5
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: composer
-  image: joomlaprojects/docker-images:php5.5
-  commands:
-  - php -v
-  - composer update --prefer-stable
-  - ""
-  - ""
-  volumes:
-  - name: composer-cache
-    path: /tmp/composer-cache
-
-- name: PHPUnit
-  image: joomlaprojects/docker-images:php5.5
   commands:
   - vendor/bin/phpunit
 
@@ -189,8 +126,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -219,8 +154,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -249,8 +182,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -279,8 +210,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -309,8 +238,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -339,8 +266,6 @@ steps:
   commands:
   - php -v
   - composer update --prefer-stable
-  - ""
-  - ""
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -368,9 +293,7 @@ steps:
   image: joomlaprojects/docker-images:php8.0
   commands:
   - php -v
-  - composer update --ignore-platform-reqs --prefer-stable
-  - wget https://ci.joomla.org/artifacts/phpunit8_php8_match.patch
-  - patch -N -p0 < phpunit8_php8_match.patch || echo "Ignore this error."
+  - composer update --ignore-platform-reqs
   volumes:
   - name: composer-cache
     path: /tmp/composer-cache
@@ -388,6 +311,6 @@ volumes:
 
 ---
 kind: signature
-hmac: 5d1ee6492974d6d61becd905c362c1a1971be44a2a2c3f7c9c7f0d468e42c180
+hmac: 855b0c101e13b4927c231aaa681554a4118068e0d54195fde85575883d983112
 
 ...
