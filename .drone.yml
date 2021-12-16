@@ -21,7 +21,7 @@ steps:
   image: joomlaprojects/docker-images:php7.4
   commands:
   - vendor/bin/phpcs --config-set installed_paths vendor/joomla/coding-standards
-  - vendor/bin/phpcs -p --report=full --extensions=php --standard=ruleset.xml ./
+  - vendor/bin/phpcs -p --report=full --extensions=php --standard=ruleset.xml Cipher/ Password/ CipherInterface.php Crypt.php Key.php PasswordInterface.php
 
 - name: phpmd
   image: joomlaprojects/docker-images:php7.4
@@ -311,6 +311,6 @@ volumes:
 
 ---
 kind: signature
-hmac: 6bf1ad4ff7160cce06899c3b3b2b1ffe4452d47bc7656c08f4c141db1a8c6b5a
+hmac: 855b0c101e13b4927c231aaa681554a4118068e0d54195fde85575883d983112
 
 ...
