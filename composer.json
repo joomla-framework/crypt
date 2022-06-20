@@ -23,7 +23,6 @@
         "paragonie/sodium_compat": "To use Sodium cipher",
         "symfony/polyfill-php56": "Required to use Joomla\\Crypt\\Password\\Simple on PHP 5.5 or earlier"
     },
-    "target-dir": "Joomla/Crypt",
     "autoload": {
         "psr-0": {
             "Joomla\\Crypt\\Cipher_": "Cipher/"
