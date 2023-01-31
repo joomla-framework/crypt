@@ -17,128 +17,128 @@ use PHPUnit\Framework\TestCase;
  */
 class CryptTest extends TestCase
 {
-	/**
-	 * Cipher used for testing
-	 *
-	 * @var  MockObject|CipherInterface
-	 */
-	private $cipher;
+    /**
+     * Cipher used for testing
+     *
+     * @var  MockObject|CipherInterface
+     */
+    private $cipher;
 
-	/**
-	 * Generated key for testing
-	 *
-	 * @var  MockObject|Key
-	 */
-	private $key;
+    /**
+     * Generated key for testing
+     *
+     * @var  MockObject|Key
+     */
+    private $key;
 
-	/**
-	 * Object under testing
-	 *
-	 * @var  Crypt
-	 */
-	private $object;
+    /**
+     * Object under testing
+     *
+     * @var  Crypt
+     */
+    private $object;
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 *
-	 * @return  void
-	 */
-	protected function setUp(): void
-	{
-		parent::setUp();
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     *
+     * @return  void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->cipher = $this->createMock(CipherInterface::class);
-		$this->key    = $this->createMock(Key::class);
+        $this->cipher = $this->createMock(CipherInterface::class);
+        $this->key    = $this->createMock(Key::class);
 
-		$this->object = new Crypt($this->cipher, $this->key);
-	}
+        $this->object = new Crypt($this->cipher, $this->key);
+    }
 
-	/**
-	 * @testdox  Validates data is encrypted and decrypted correctly
-	 *
-	 * @covers   Joomla\Crypt\Crypt
-	 */
-	public function testDataEncryptionAndDecryption()
-	{
-		$decrypted = 'decrypt';
-		$encrypted = 'encrypt';
+    /**
+     * @testdox  Validates data is encrypted and decrypted correctly
+     *
+     * @covers   Joomla\Crypt\Crypt
+     */
+    public function testDataEncryptionAndDecryption()
+    {
+        $decrypted = 'decrypt';
+        $encrypted = 'encrypt';
 
-		$this->cipher->expects($this->once())
-			->method('encrypt')
-			->with($decrypted)
-			->willReturn($encrypted);
+        $this->cipher->expects($this->once())
+            ->method('encrypt')
+            ->with($decrypted)
+            ->willReturn($encrypted);
 
-		$this->cipher->expects($this->once())
-			->method('decrypt')
-			->with($encrypted)
-			->willReturn($decrypted);
+        $this->cipher->expects($this->once())
+            ->method('decrypt')
+            ->with($encrypted)
+            ->willReturn($decrypted);
 
-		$this->object->encrypt($decrypted);
-		$this->object->decrypt($encrypted);
-	}
+        $this->object->encrypt($decrypted);
+        $this->object->decrypt($encrypted);
+    }
 
-	/**
-	 * @testdox  Validates keys are correctly generated
-	 *
-	 * @covers   Joomla\Crypt\Crypt
-	 * @uses     Joomla\Crypt\Key
-	 */
-	public function testGenerateKey()
-	{
-		$this->cipher->expects($this->once())
-			->method('generateKey')
-			->willReturn($this->createMock(Key::class));
+    /**
+     * @testdox  Validates keys are correctly generated
+     *
+     * @covers   Joomla\Crypt\Crypt
+     * @uses     Joomla\Crypt\Key
+     */
+    public function testGenerateKey()
+    {
+        $this->cipher->expects($this->once())
+            ->method('generateKey')
+            ->willReturn($this->createMock(Key::class));
 
-		$this->object->generateKey();
-	}
+        $this->object->generateKey();
+    }
 
-	/**
-	 * @testdox  Validates a new key can be set
-	 *
-	 * @covers   Joomla\Crypt\Crypt
-	 * @uses     Joomla\Crypt\Key
-	 */
-	public function testSetKey()
-	{
-		$key = $this->createMock(Key::class);
+    /**
+     * @testdox  Validates a new key can be set
+     *
+     * @covers   Joomla\Crypt\Crypt
+     * @uses     Joomla\Crypt\Key
+     */
+    public function testSetKey()
+    {
+        $key = $this->createMock(Key::class);
 
-		$this->object->setKey($key);
+        $this->object->setKey($key);
 
-		$property = (new \ReflectionClass($this->object))->getProperty('key');
-		$property->setAccessible(true);
+        $property = (new \ReflectionClass($this->object))->getProperty('key');
+        $property->setAccessible(true);
 
-		$this->assertSame($key, $property->getValue($this->object));
-	}
+        $this->assertSame($key, $property->getValue($this->object));
+    }
 
-	/**
-	 * Test data for processing
-	 *
-	 * @return  \Generator
-	 */
-	public function dataRandomByteLength(): \Generator
-	{
-		yield '8 bytes' => [8];
-		yield '16 bytes' => [16];
-		yield '24 bytes' => [24];
-		yield '32 bytes' => [32];
-		yield '40 bytes' => [40];
-	}
+    /**
+     * Test data for processing
+     *
+     * @return  \Generator
+     */
+    public function dataRandomByteLength(): \Generator
+    {
+        yield '8 bytes' => [8];
+        yield '16 bytes' => [16];
+        yield '24 bytes' => [24];
+        yield '32 bytes' => [32];
+        yield '40 bytes' => [40];
+    }
 
-	/**
-	 * @testdox  Validates a string of random bytes of the requested size is returned
-	 *
-	 * @param    integer  $length  The length of the random string to generate
-	 *
-	 * @covers   Joomla\Crypt\Crypt
-	 *
-	 * @dataProvider  dataRandomByteLength
-	 */
-	public function testGenRandomBytes($length)
-	{
-		$this->assertSame(
-			$length,
-			\strlen(Crypt::genRandomBytes($length))
-		);
-	}
+    /**
+     * @testdox  Validates a string of random bytes of the requested size is returned
+     *
+     * @param    integer  $length  The length of the random string to generate
+     *
+     * @covers   Joomla\Crypt\Crypt
+     *
+     * @dataProvider  dataRandomByteLength
+     */
+    public function testGenRandomBytes($length)
+    {
+        $this->assertSame(
+            $length,
+            \strlen(Crypt::genRandomBytes($length))
+        );
+    }
 }

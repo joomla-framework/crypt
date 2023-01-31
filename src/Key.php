@@ -15,82 +15,82 @@ namespace Joomla\Crypt;
  */
 class Key
 {
-	/**
-	 * The private key.
-	 *
-	 * @var    string
-	 * @since  1.0
-	 */
-	private $private;
+    /**
+     * The private key.
+     *
+     * @var    string
+     * @since  1.0
+     */
+    private $private;
 
-	/**
-	 * The public key.
-	 *
-	 * @var    string
-	 * @since  1.0
-	 */
-	private $public;
+    /**
+     * The public key.
+     *
+     * @var    string
+     * @since  1.0
+     */
+    private $public;
 
-	/**
-	 * The key type.
-	 *
-	 * @var    string
-	 * @since  1.0
-	 */
-	private $type;
+    /**
+     * The key type.
+     *
+     * @var    string
+     * @since  1.0
+     */
+    private $type;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param   string  $type     The key type.
-	 * @param   string  $private  The private key.
-	 * @param   string  $public   The public key.
-	 *
-	 * @since   1.0
-	 */
-	public function __construct(string $type, string $private, string $public)
-	{
-		// Set the key type.
-		$this->type = $type;
+    /**
+     * Constructor.
+     *
+     * @param   string  $type     The key type.
+     * @param   string  $private  The private key.
+     * @param   string  $public   The public key.
+     *
+     * @since   1.0
+     */
+    public function __construct(string $type, string $private, string $public)
+    {
+        // Set the key type.
+        $this->type = $type;
 
-		// Set the public/private key strings.
-		$this->private = $private;
-		$this->public  = $public;
-	}
+        // Set the public/private key strings.
+        $this->private = $private;
+        $this->public  = $public;
+    }
 
-	/**
-	 * Retrieve the private key
-	 *
-	 * @return  string
-	 *
-	 * @since   2.0.0
-	 */
-	public function getPrivate(): string
-	{
-		return $this->private;
-	}
+    /**
+     * Retrieve the private key
+     *
+     * @return  string
+     *
+     * @since   2.0.0
+     */
+    public function getPrivate(): string
+    {
+        return $this->private;
+    }
 
-	/**
-	 * Retrieve the public key
-	 *
-	 * @return  string
-	 *
-	 * @since   2.0.0
-	 */
-	public function getPublic(): string
-	{
-		return $this->public;
-	}
+    /**
+     * Retrieve the public key
+     *
+     * @return  string
+     *
+     * @since   2.0.0
+     */
+    public function getPublic(): string
+    {
+        return $this->public;
+    }
 
-	/**
-	 * Retrieve the key type
-	 *
-	 * @return  string
-	 *
-	 * @since   2.0.0
-	 */
-	public function getType(): string
-	{
-		return $this->type;
-	}
+    /**
+     * Retrieve the key type
+     *
+     * @return  string
+     *
+     * @since   2.0.0
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
 }

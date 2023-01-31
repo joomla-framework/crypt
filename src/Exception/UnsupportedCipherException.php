@@ -15,15 +15,15 @@ namespace Joomla\Crypt\Exception;
  */
 class UnsupportedCipherException extends \LogicException implements CryptExceptionInterface
 {
-	/**
-	 * UnsupportedCipherException constructor.
-	 *
-	 * @param   string  $class  The class name of the unsupported cipher.
-	 *
-	 * @since   2.0.0
-	 */
-	public function __construct(string $class)
-	{
-		parent::__construct("The '$class' cipher is not supported in this environment.");
-	}
+    /**
+     * UnsupportedCipherException constructor.
+     *
+     * @param   string  $class  The class name of the unsupported cipher.
+     *
+     * @since   2.0.0
+     */
+    public function __construct(string $class)
+    {
+        parent::__construct("The '$class' cipher is not supported in this environment.");
+    }
 }

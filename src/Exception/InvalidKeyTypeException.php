@@ -15,16 +15,16 @@ namespace Joomla\Crypt\Exception;
  */
 class InvalidKeyTypeException extends \InvalidArgumentException implements CryptExceptionInterface
 {
-	/**
-	 * InvalidKeyTypeException constructor.
-	 *
-	 * @param   string  $expectedKeyType  The expected key type.
-	 * @param   string  $actualKeyType    The actual key type.
-	 *
-	 * @since   1.4.0
-	 */
-	public function __construct($expectedKeyType, $actualKeyType)
-	{
-		parent::__construct("Invalid key of type: $actualKeyType.  Expected $expectedKeyType.");
-	}
+    /**
+     * InvalidKeyTypeException constructor.
+     *
+     * @param   string  $expectedKeyType  The expected key type.
+     * @param   string  $actualKeyType    The actual key type.
+     *
+     * @since   1.4.0
+     */
+    public function __construct($expectedKeyType, $actualKeyType)
+    {
+        parent::__construct("Invalid key of type: $actualKeyType.  Expected $expectedKeyType.");
+    }
 }

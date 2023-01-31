@@ -14,78 +14,78 @@ use PHPUnit\Framework\TestCase;
  */
 class KeyTest extends TestCase
 {
-	/**
-	 * Object under testing
-	 *
-	 * @var  Key
-	 */
-	private $object;
+    /**
+     * Object under testing
+     *
+     * @var  Key
+     */
+    private $object;
 
-	/**
-	 * Private key for the test object
-	 *
-	 * @var string
-	 */
-	private $private = 'private';
+    /**
+     * Private key for the test object
+     *
+     * @var string
+     */
+    private $private = 'private';
 
-	/**
-	 * Public key for the test object
-	 *
-	 * @var string
-	 */
-	private $public = 'public';
+    /**
+     * Public key for the test object
+     *
+     * @var string
+     */
+    private $public = 'public';
 
-	/**
-	 * Key type for the test object
-	 *
-	 * @var string
-	 */
-	private $type = 'test';
+    /**
+     * Key type for the test object
+     *
+     * @var string
+     */
+    private $type = 'test';
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 *
-	 * @return  void
-	 */
-	protected function setUp(): void
-	{
-		parent::setUp();
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     *
+     * @return  void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->type    = 'test';
-		$this->public  = 'public';
-		$this->private = 'private';
+        $this->type    = 'test';
+        $this->public  = 'public';
+        $this->private = 'private';
 
-		$this->object = new Key($this->type, $this->private, $this->public);
-	}
+        $this->object = new Key($this->type, $this->private, $this->public);
+    }
 
-	/**
-	 * @testdox  Validates the private key is returned
-	 *
-	 * @covers   Joomla\Crypt\Key
-	 */
-	public function testGetPrivate()
-	{
-		$this->assertSame($this->private, $this->object->getPrivate());
-	}
+    /**
+     * @testdox  Validates the private key is returned
+     *
+     * @covers   Joomla\Crypt\Key
+     */
+    public function testGetPrivate()
+    {
+        $this->assertSame($this->private, $this->object->getPrivate());
+    }
 
-	/**
-	 * @testdox  Validates the public key is returned
-	 *
-	 * @covers   Joomla\Crypt\Key
-	 */
-	public function testGetPublic()
-	{
-		$this->assertSame($this->public, $this->object->getPublic());
-	}
+    /**
+     * @testdox  Validates the public key is returned
+     *
+     * @covers   Joomla\Crypt\Key
+     */
+    public function testGetPublic()
+    {
+        $this->assertSame($this->public, $this->object->getPublic());
+    }
 
-	/**
-	 * @testdox  Validates the key type is returned
-	 *
-	 * @covers   Joomla\Crypt\Key
-	 */
-	public function testGetKeyType()
-	{
-		$this->assertSame($this->type, $this->object->getType());
-	}
+    /**
+     * @testdox  Validates the key type is returned
+     *
+     * @covers   Joomla\Crypt\Key
+     */
+    public function testGetKeyType()
+    {
+        $this->assertSame($this->type, $this->object->getType());
+    }
 }
