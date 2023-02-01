@@ -11,7 +11,7 @@
     "require-dev": {
         "defuse/php-encryption": "^2.0",
         "paragonie/sodium_compat": "^1.0",
-        "phpunit/phpunit": "^8.5|^9.0",
+        "phpunit/phpunit": "^9.0",
         "symfony/polyfill-util": "^1.0",
         "symfony/phpunit-bridge": "^4.4|^5.0",
         "squizlabs/php_codesniffer": "~3.7.1"
