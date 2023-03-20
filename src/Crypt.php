@@ -43,8 +43,8 @@ class Crypt
      * Object Constructor takes an optional key to be used for encryption/decryption. If no key is given then the
      * secret word from the configuration object is used.
      *
-     * @param   CipherInterface  $cipher  The encryption cipher object.
-     * @param   Key              $key     The encryption key[/pair)].
+     * @param   ?CipherInterface  $cipher  The encryption cipher object.
+     * @param   ?Key              $key     The encryption key[/pair)].
      *
      * @since   1.0
      */

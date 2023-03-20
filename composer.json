@@ -6,18 +6,17 @@
     "homepage": "https://github.com/joomla-framework/crypt",
     "license": "GPL-2.0-or-later",
     "require": {
-        "php": "~8.1.0"
+        "php": "^8.1.0"
     },
     "require-dev": {
         "defuse/php-encryption": "^2.0",
         "paragonie/sodium_compat": "^1.0",
         "phpunit/phpunit": "^9.5.28",
         "symfony/polyfill-util": "^1.0",
-        "symfony/phpunit-bridge": "^4.4|^5.0",
-        "squizlabs/php_codesniffer": "~3.7.1"
-    },
-    "conflict": {
-        "defuse/php-encryption": "<2.0"
+        "symfony/phpunit-bridge": "^5.0",
+        "squizlabs/php_codesniffer": "~3.7.2",
+        "phpstan/phpstan": "^1.10.7",
+        "phan/phan": "^5.4.2"
     },
     "suggest": {
         "ext-openssl": "To use the OpenSSL cipher",
@@ -38,7 +37,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev",
+            "dev-2.0-dev": "2.0-dev",
             "dev-3.x-dev": "3.0-dev"
         }
     }
