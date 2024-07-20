@@ -9,9 +9,9 @@ namespace Joomla\Crypt\Tests\Cipher;
 
 use Defuse\Crypto\Key as DefuseKey;
 use Joomla\Crypt\Cipher\Crypto as CryptoCipher;
+use Joomla\Crypt\Key;
 use PHPUnit\Framework\TestCase;
 use Symfony\Polyfill\Util\Binary;
-use Joomla\Crypt\Key;
 
 /**
  * Test class for \Joomla\Crypt\Cipher\Crypto.
