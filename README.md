@@ -1,4 +1,4 @@
-# The Crypt Package [![Build Status](https://ci.joomla.org/api/badges/joomla-framework/crypt/status.svg?ref=refs/heads/2.0-dev)](https://ci.joomla.org/joomla-framework/crypt)
+# The Crypt Package [![Build Status](https://ci.joomla.org/api/badges/joomla-framework/crypt/status.svg?ref=refs/heads/3.x-dev)](https://ci.joomla.org/joomla-framework/crypt)
 
 [![Latest Stable Version](https://poser.pugx.org/joomla/crypt/v/stable)](https://packagist.org/packages/joomla/crypt)
 [![Total Downloads](https://poser.pugx.org/joomla/crypt/downloads)](https://packagist.org/packages/joomla/crypt)
@@ -39,12 +39,12 @@ Aside from the two methods create and verify methods, this implementation also a
 
 # Installation via Composer
 
-Add `"joomla/crypt": "~2.0" to the require block in your composer.json and then run `composer install`.
+Add `"joomla/crypt": "~3.0" to the require block in your composer.json and then run `composer install`.
 
 ```json
 {
 	"require": {
-		"joomla/crypt": "~2.0"
+		"joomla/crypt": "~3.0"
 	}
 }
 ```
@@ -52,11 +52,11 @@ Add `"joomla/crypt": "~2.0" to the require block in your composer.json and then 
 Alternatively, you can simply run the following from the command line:
 
 ```sh
-composer require joomla/crypt "~2.0"
+composer require joomla/crypt "~3.0"
 ```
 
 If you want to include the test sources, use
 
 ```sh
-composer require --prefer-source joomla/crypt "~2.0"
+composer require --prefer-source joomla/crypt "~3.0"
 ```
