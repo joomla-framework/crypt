@@ -1,4 +1,4 @@
-# The Crypt Package [![Build Status](https://ci.joomla.org/api/badges/joomla-framework/crypt/status.svg?ref=refs/heads/3.x-dev)](https://ci.joomla.org/joomla-framework/crypt)
+# The Crypt Package [![Build Status](https://github.com/joomla-framework/crypt/actions/workflows/ci.yml/badge.svg?branch=3.x-dev)](https://github.com/joomla-framework/crypt)
 
 [![Latest Stable Version](https://poser.pugx.org/joomla/crypt/v/stable)](https://packagist.org/packages/joomla/crypt)
 [![Total Downloads](https://poser.pugx.org/joomla/crypt/downloads)](https://packagist.org/packages/joomla/crypt)
