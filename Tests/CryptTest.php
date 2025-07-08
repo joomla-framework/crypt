@@ -10,6 +10,7 @@ namespace Joomla\Crypt\Tests;
 use Joomla\Crypt\CipherInterface;
 use Joomla\Crypt\Crypt;
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -58,7 +59,7 @@ class CryptTest extends TestCase
     /**
      * @testdox  Validates data is encrypted and decrypted correctly
      *
-     * @covers   Joomla\Crypt\Crypt
+     * @covers   \Joomla\Crypt\Crypt
      */
     public function testDataEncryptionAndDecryption()
     {
@@ -82,8 +83,8 @@ class CryptTest extends TestCase
     /**
      * @testdox  Validates keys are correctly generated
      *
-     * @covers   Joomla\Crypt\Crypt
-     * @uses     Joomla\Crypt\Key
+     * @covers   \Joomla\Crypt\Crypt
+     * @uses     \Joomla\Crypt\Key
      */
     public function testGenerateKey()
     {
@@ -97,8 +98,8 @@ class CryptTest extends TestCase
     /**
      * @testdox  Validates a new key can be set
      *
-     * @covers   Joomla\Crypt\Crypt
-     * @uses     Joomla\Crypt\Key
+     * @covers   \Joomla\Crypt\Crypt
+     * @uses     \Joomla\Crypt\Key
      */
     public function testSetKey()
     {
@@ -115,15 +116,17 @@ class CryptTest extends TestCase
     /**
      * Test data for processing
      *
-     * @return  \Generator
+     * @return  array
      */
-    public function dataRandomByteLength(): \Generator
+    public static function dataRandomByteLength(): array
     {
-        yield '8 bytes' => [8];
-        yield '16 bytes' => [16];
-        yield '24 bytes' => [24];
-        yield '32 bytes' => [32];
-        yield '40 bytes' => [40];
+        return [
+            '8 bytes' => [8],
+            '16 bytes' => [16],
+            '24 bytes' => [24],
+            '32 bytes' => [32],
+            '40 bytes' => [40],
+        ];
     }
 
     /**
@@ -131,10 +134,9 @@ class CryptTest extends TestCase
      *
      * @param    integer  $length  The length of the random string to generate
      *
-     * @covers   Joomla\Crypt\Crypt
-     *
-     * @dataProvider  dataRandomByteLength
+     * @covers   \Joomla\Crypt\Crypt
      */
+    #[DataProvider('dataRandomByteLength')]
     public function testGenRandomBytes($length)
     {
         $this->assertSame(
