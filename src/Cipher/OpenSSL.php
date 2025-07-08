@@ -72,7 +72,7 @@ class OpenSSL implements CipherInterface
             throw new InvalidKeyTypeException('openssl', $key->getType());
         }
 
-        $cleartext = openssl_decrypt($data, $this->method, $key->getPrivate(), true, $this->iv);
+        $cleartext = openssl_decrypt($data, $this->method, $key->getPrivate(), 0, $this->iv);
 
         if ($cleartext === false) {
             throw new DecryptionException('Failed to decrypt data');
@@ -100,7 +100,7 @@ class OpenSSL implements CipherInterface
             throw new InvalidKeyTypeException('openssl', $key->getType());
         }
 
-        $encrypted = openssl_encrypt($data, $this->method, $key->getPrivate(), true, $this->iv);
+        $encrypted = openssl_encrypt($data, $this->method, $key->getPrivate(), 0, $this->iv);
 
         if ($encrypted === false) {
             throw new EncryptionException('Unable to encrypt data');
