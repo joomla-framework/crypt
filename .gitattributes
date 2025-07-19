@@ -1,5 +1,4 @@
 .github/ export-ignore
-.phan/ export-ignore
 docs/ export-ignore
 Tests/ export-ignore
 .drone.jsonnet export-ignore
@@ -8,5 +7,6 @@ Tests/ export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 CONTRIBUTING.md export-ignore
+phpstan.neon export-ignore
 phpunit.xml.dist export-ignore
 ruleset.xml export-ignore
