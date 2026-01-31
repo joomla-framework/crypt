@@ -107,7 +107,6 @@ class CryptTest extends TestCase
         $this->object->setKey($key);
 
         $property = (new \ReflectionClass($this->object))->getProperty('key');
-        $property->setAccessible(true);
 
         $this->assertSame($key, $property->getValue($this->object));
     }
