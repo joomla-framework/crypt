@@ -10,6 +10,7 @@ namespace Joomla\Crypt\Tests;
 use Joomla\Crypt\CipherInterface;
 use Joomla\Crypt\Crypt;
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -56,7 +57,7 @@ class CryptTest extends TestCase
         parent::setUp();
 
         $this->cipher = $this->createMock(CipherInterface::class);
-        $this->key    = $this->createMock(Key::class);
+        $this->key    = $this->createStub(Key::class);
 
         $this->object = new Crypt($this->cipher, $this->key);
     }
@@ -86,15 +87,16 @@ class CryptTest extends TestCase
     {
         $this->cipher->expects($this->once())
             ->method('generateKey')
-            ->willReturn($this->createMock(Key::class));
+            ->willReturn($this->createStub(Key::class));
 
         $this->object->generateKey();
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[TestDox('Validates a new key can be set')]
     public function testSetKey()
     {
-        $key = $this->createMock(Key::class);
+        $key = $this->createStub(Key::class);
 
         $this->object->setKey($key);
 
@@ -123,6 +125,7 @@ class CryptTest extends TestCase
     /**
      * @param    integer  $length  The length of the random string to generate
      */
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('dataRandomByteLength')]
     #[TestDox('Validates a string of random bytes of the requested size is returned')]
     public function testGenRandomBytes($length)
