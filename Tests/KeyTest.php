@@ -8,11 +8,14 @@
 namespace Joomla\Crypt\Tests;
 
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Joomla\Crypt\Key.
  */
+#[CoversClass(Key::class)]
 class KeyTest extends TestCase
 {
     /**
@@ -60,31 +63,19 @@ class KeyTest extends TestCase
         $this->object = new Key($this->type, $this->private, $this->public);
     }
 
-    /**
-     * @testdox  Validates the private key is returned
-     *
-     * @covers   Joomla\Crypt\Key
-     */
+    #[TestDox('Validates the private key is returned')]
     public function testGetPrivate()
     {
         $this->assertSame($this->private, $this->object->getPrivate());
     }
 
-    /**
-     * @testdox  Validates the public key is returned
-     *
-     * @covers   Joomla\Crypt\Key
-     */
+    #[TestDox('Validates the public key is returned')]
     public function testGetPublic()
     {
         $this->assertSame($this->public, $this->object->getPublic());
     }
 
-    /**
-     * @testdox  Validates the key type is returned
-     *
-     * @covers   Joomla\Crypt\Key
-     */
+    #[TestDox('Validates the key type is returned')]
     public function testGetKeyType()
     {
         $this->assertSame($this->type, $this->object->getType());

@@ -9,12 +9,17 @@ namespace Joomla\Crypt\Tests\Cipher;
 
 use Joomla\Crypt\Cipher\OpenSSL;
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Joomla\Crypt\Cipher\OpenSSL.
  */
+#[CoversClass(OpenSSL::class)]
+#[UsesClass(Key::class)]
 class OpenSSLTest extends TestCase
 {
     /**
@@ -50,14 +55,10 @@ class OpenSSLTest extends TestCase
     }
 
     /**
-     * @testdox  Validates data is encrypted and decrypted correctly
-     *
      * @param   string  $data  The decrypted data to validate
-     *
-     * @covers   \Joomla\Crypt\Cipher\OpenSSL
-     * @uses     \Joomla\Crypt\Key
      */
     #[DataProvider('dataStrings')]
+    #[TestDox('Validates data is encrypted and decrypted correctly')]
     public function testDataEncryptionAndDecryption($data)
     {
         $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
@@ -74,12 +75,7 @@ class OpenSSLTest extends TestCase
         $this->assertSame($data, $decrypted);
     }
 
-    /**
-     * @testdox  Validates keys are correctly generated
-     *
-     * @covers   \Joomla\Crypt\Cipher\OpenSSL
-     * @uses     \Joomla\Crypt\Key
-     */
+    #[TestDox('Validates keys are correctly generated')]
     public function testGenerateKey()
     {
         $passphraseFile = __DIR__ . '/stubs/openssl-passphrase.dat';

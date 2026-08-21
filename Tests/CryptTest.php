@@ -10,13 +10,18 @@ namespace Joomla\Crypt\Tests;
 use Joomla\Crypt\CipherInterface;
 use Joomla\Crypt\Crypt;
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Joomla\Crypt\Crypt.
  */
+#[CoversClass(Crypt::class)]
+#[UsesClass(Key::class)]
 class CryptTest extends TestCase
 {
     /**
@@ -56,11 +61,7 @@ class CryptTest extends TestCase
         $this->object = new Crypt($this->cipher, $this->key);
     }
 
-    /**
-     * @testdox  Validates data is encrypted and decrypted correctly
-     *
-     * @covers   \Joomla\Crypt\Crypt
-     */
+    #[TestDox('Validates data is encrypted and decrypted correctly')]
     public function testDataEncryptionAndDecryption()
     {
         $decrypted = 'decrypt';
@@ -80,12 +81,7 @@ class CryptTest extends TestCase
         $this->object->decrypt($encrypted);
     }
 
-    /**
-     * @testdox  Validates keys are correctly generated
-     *
-     * @covers   \Joomla\Crypt\Crypt
-     * @uses     \Joomla\Crypt\Key
-     */
+    #[TestDox('Validates keys are correctly generated')]
     public function testGenerateKey()
     {
         $this->cipher->expects($this->once())
@@ -95,12 +91,7 @@ class CryptTest extends TestCase
         $this->object->generateKey();
     }
 
-    /**
-     * @testdox  Validates a new key can be set
-     *
-     * @covers   \Joomla\Crypt\Crypt
-     * @uses     \Joomla\Crypt\Key
-     */
+    #[TestDox('Validates a new key can be set')]
     public function testSetKey()
     {
         $key = $this->createMock(Key::class);
@@ -130,13 +121,10 @@ class CryptTest extends TestCase
     }
 
     /**
-     * @testdox  Validates a string of random bytes of the requested size is returned
-     *
      * @param    integer  $length  The length of the random string to generate
-     *
-     * @covers   \Joomla\Crypt\Crypt
      */
     #[DataProvider('dataRandomByteLength')]
+    #[TestDox('Validates a string of random bytes of the requested size is returned')]
     public function testGenRandomBytes($length)
     {
         $this->assertSame(
