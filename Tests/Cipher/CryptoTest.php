@@ -10,13 +10,18 @@ namespace Joomla\Crypt\Tests\Cipher;
 use Defuse\Crypto\Key as DefuseKey;
 use Joomla\Crypt\Cipher\Crypto as CryptoCipher;
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Polyfill\Util\Binary;
 
 /**
  * Test class for \Joomla\Crypt\Cipher\Crypto.
  */
+#[CoversClass(CryptoCipher::class)]
+#[UsesClass(Key::class)]
 class CryptoTest extends TestCase
 {
     /**
@@ -52,14 +57,10 @@ class CryptoTest extends TestCase
     }
 
     /**
-     * @testdox  Validates data is encrypted and decrypted correctly
-     *
      * @param   string  $data  The decrypted data to validate
-     *
-     * @covers   \Joomla\Crypt\Cipher\Crypto
-     * @uses     \Joomla\Crypt\Key
      */
     #[DataProvider('dataStrings')]
+    #[TestDox('Validates data is encrypted and decrypted correctly')]
     public function testDataEncryptionAndDecryption($data)
     {
         $cipher = new CryptoCipher();
@@ -76,12 +77,7 @@ class CryptoTest extends TestCase
         $this->assertSame($data, $decrypted);
     }
 
-    /**
-     * @testdox  Validates keys are correctly generated
-     *
-     * @covers   \Joomla\Crypt\Cipher\Crypto
-     * @uses     \Joomla\Crypt\Key
-     */
+    #[TestDox('Validates keys are correctly generated')]
     public function testGenerateKey()
     {
         $cipher = new CryptoCipher();

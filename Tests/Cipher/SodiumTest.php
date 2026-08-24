@@ -10,13 +10,18 @@ namespace Joomla\Crypt\Tests\Cipher;
 use Joomla\Crypt\Cipher\Sodium;
 use Joomla\Crypt\Key;
 use ParagonIE\Sodium\Compat;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Polyfill\Util\Binary;
 
 /**
  * Test class for \Joomla\Crypt\Cipher\Sodium.
  */
+#[CoversClass(Sodium::class)]
+#[UsesClass(Key::class)]
 class SodiumTest extends TestCase
 {
     /**
@@ -52,14 +57,10 @@ class SodiumTest extends TestCase
     }
 
     /**
-     * @testdox  Validates data is encrypted and decrypted correctly
-     *
      * @param   string  $data  The decrypted data to validate
-     *
-     * @covers   \Joomla\Crypt\Cipher\Sodium
-     * @uses     \Joomla\Crypt\Key
      */
     #[DataProvider('dataStrings')]
+    #[TestDox('Validates data is encrypted and decrypted correctly')]
     public function testDataEncryptionAndDecryption($data)
     {
         $cipher = new Sodium();
@@ -78,12 +79,7 @@ class SodiumTest extends TestCase
         $this->assertSame($data, $decrypted);
     }
 
-    /**
-     * @testdox  Validates keys are correctly generated
-     *
-     * @covers   \Joomla\Crypt\Cipher\Sodium
-     * @uses     \Joomla\Crypt\Key
-     */
+    #[TestDox('Validates keys are correctly generated')]
     public function testGenerateKey()
     {
         $cipher = new Sodium();
