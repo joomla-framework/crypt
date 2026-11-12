@@ -69,7 +69,7 @@ class Crypt
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function decrypt($data)
+    public function decrypt(string $data): string
     {
         return $this->cipher->decrypt($data, $this->key);
     }
@@ -86,7 +86,7 @@ class Crypt
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function encrypt($data)
+    public function encrypt(string $data): string
     {
         return $this->cipher->encrypt($data, $this->key);
     }
@@ -102,7 +102,7 @@ class Crypt
      * @throws  InvalidKeyException if the key cannot be generated
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function generateKey(array $options = [])
+    public function generateKey(array $options = []): Key
     {
         return $this->cipher->generateKey($options);
     }
@@ -112,11 +112,11 @@ class Crypt
      *
      * @param   Key  $key  The key object to set.
      *
-     * @return  Crypt  Instance of $this to allow chaining.
+     * @return  static  Instance of $this to allow chaining.
      *
      * @since   1.0
      */
-    public function setKey(Key $key)
+    public function setKey(Key $key): static
     {
         $this->key = $key;
 
@@ -132,7 +132,7 @@ class Crypt
      *
      * @since   1.0
      */
-    public static function genRandomBytes($length = 16)
+    public static function genRandomBytes(int $length = 16): string
     {
         return random_bytes($length);
     }

@@ -35,7 +35,7 @@ interface CipherInterface
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function decrypt($data, Key $key);
+    public function decrypt(string $data, Key $key): string;
 
     /**
      * Method to encrypt a data string.
@@ -50,7 +50,7 @@ interface CipherInterface
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function encrypt($data, Key $key);
+    public function encrypt(string $data, Key $key): string;
 
     /**
      * Method to generate a new encryption key[/pair] object.
@@ -63,7 +63,7 @@ interface CipherInterface
      * @throws  InvalidKeyException if the key cannot be generated
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function generateKey(array $options = []);
+    public function generateKey(array $options = []): Key;
 
     /**
      * Check if the cipher is supported in this environment.

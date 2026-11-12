@@ -45,7 +45,7 @@ class Sodium implements CipherInterface
      * @throws  DecryptionException if the data cannot be decrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
-    public function decrypt($data, Key $key)
+    public function decrypt(string $data, Key $key): string
     {
         // Validate key.
         if ($key->getType() !== 'sodium') {
@@ -85,7 +85,7 @@ class Sodium implements CipherInterface
      * @throws  EncryptionException if the data cannot be encrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
-    public function encrypt($data, Key $key)
+    public function encrypt(string $data, Key $key): string
     {
         // Validate key.
         if ($key->getType() !== 'sodium') {
@@ -118,7 +118,7 @@ class Sodium implements CipherInterface
      * @throws  InvalidKeyException if the key cannot be generated
      * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
-    public function generateKey(array $options = [])
+    public function generateKey(array $options = []): Key
     {
         try {
             // Generate the encryption key.
