@@ -1,41 +1,63 @@
-# The Crypt Package [![Build Status](https://github.com/joomla-framework/crypt/actions/workflows/ci.yml/badge.svg?branch=3.x-dev)](https://github.com/joomla-framework/crypt)
+# The Crypt Package [![Build Status](https://github.com/joomla-framework/crypt/actions/workflows/ci.yml/badge.svg?branch=4.x-dev)](https://github.com/joomla-framework/crypt)
 
 [![Latest Stable Version](https://poser.pugx.org/joomla/crypt/v/stable)](https://packagist.org/packages/joomla/crypt)
 [![Total Downloads](https://poser.pugx.org/joomla/crypt/downloads)](https://packagist.org/packages/joomla/crypt)
 [![Latest Unstable Version](https://poser.pugx.org/joomla/crypt/v/unstable)](https://packagist.org/packages/joomla/crypt)
 [![License](https://poser.pugx.org/joomla/crypt/license)](https://packagist.org/packages/joomla/crypt)
 
-The Crypt password provides a set of classes that can be used for encrypting and hashing data.
-
-## Interfaces
-
-### `PasswordInterface`
-
-`PasswordInterface` is an interface that requires a class to be implemented with a create and a verify method.
-
-The create method should take a plain text password and a type and return a hashed password.
-
-The verify method should accept a plain text password and a hashed password and return a boolean indicating whether or not the password matched the password in the hash.
-
-The `PasswordInterface` interface defines the following constants for use with implementations:
-
-- `PasswordInterface::BLOWFISH`
-- `PasswordInterface::JOOMLA`
-- `PasswordInterface::MD5`
-- `PasswordInterface::PBKDF`
+The Crypt package provides symmetric encryption behind a common cipher interface, a key object and a set of typed
+exceptions. It does not hash passwords; use `joomla/authentication` or PHP's `password_hash()` for that.
 
 ## Classes
 
-### `Password\Simple`
+| Class | Purpose |
+|---|---|
+| `Joomla\Crypt\Crypt` | Pairs a cipher with a key and exposes `encrypt()`, `decrypt()` and `generateKey()` |
+| `Joomla\Crypt\CipherInterface` | The cipher contract |
+| `Joomla\Crypt\Cipher\Crypto` | Wrapper around `defuse/php-encryption` — **the recommended cipher** |
+| `Joomla\Crypt\Cipher\Sodium` | libsodium `crypto_box` |
+| `Joomla\Crypt\Cipher\OpenSSL` | ext-openssl — not recommended, see below |
+| `Joomla\Crypt\Key` | Holds the key type and the private and public key material |
+| `Joomla\Crypt\Exception\*` | `CryptExceptionInterface` and the concrete exceptions |
 
-#### Usage
+## Usage
 
-In addition to the interface `PasswordInterface` there is also a basic implementation provided which provides for use with the most common password schemes. This if found in the `Password\Simple` class.
+`Cipher\Crypto` needs `defuse/php-encryption`, which is only a suggested dependency:
 
-Aside from the two methods create and verify methods, this implementation also adds an additional method called setCost. This method is used to set a cost parameter for methods that support workload factors. It takes an integer cost factor as a parameter.
+```sh
+composer require defuse/php-encryption
+```
 
-`Password\Simple` provides support for bcrypt, MD5 and the traditional Joomla! CMS hashing scheme. The hash format can be specified during hash creation by using the constants `PasswordInterface::BLOWFISH`, `PasswordInterface::MD5`, `PasswordInterface::JOOMLA`, and `PasswordInterface::PBKDF`. An appropriate salt will be automatically generated when required.
+```php
+use Joomla\Crypt\Cipher\Crypto;
+use Joomla\Crypt\Crypt;
+use Joomla\Crypt\Key;
 
+$cipher = new Crypto();
+
+// Generate a key once and keep its private part in your secret storage
+$key    = $cipher->generateKey();
+$secret = $key->getPrivate();
+
+// Later: rebuild the key and always pass both the cipher and the key
+$crypt = new Crypt($cipher, new Key('crypto', $secret, ''));
+
+$ciphertext = $crypt->encrypt('some secret value');
+$plaintext  = $crypt->decrypt($ciphertext);
+```
+
+## Security notes
+
+* Use `Cipher\Crypto` unless you have a specific reason not to. It authenticates the ciphertext and
+  uses a random IV for every message.
+* `Cipher\OpenSSL` reuses the initialisation vector passed to its constructor for every message,
+  does not authenticate the ciphertext and uses the passphrase as the raw key. Do not use it for new work.
+* `Cipher\Sodium` must never encrypt two messages with the same key and nonce. Read the
+  documentation on nonce handling before using it.
+* Never log, transmit or serialize a `Key`; keep the private key in your secret storage.
+
+See the [documentation](docs/index.md) for details, and the update guides in `docs/` when upgrading
+between major versions.
 
 # Installation via Composer
 
