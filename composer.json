@@ -21,7 +21,7 @@
         "ext-openssl": "To use the OpenSSL cipher",
         "ext-sodium": "To use the Sodium cipher",
         "defuse/php-encryption": "To use Crypto cipher",
-        "paragonie/sodium_compat": "To use Sodium cipher if neither ext/sodium or ext/libsodium are available"
+        "paragonie/sodium_compat": "To use Sodium cipher if ext-sodium is not available"
     },
     "autoload": {
         "psr-4": {
