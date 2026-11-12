@@ -26,14 +26,6 @@ use ParagonIE\Sodium\Compat;
 class Sodium implements CipherInterface
 {
     /**
-     * The message nonce to be used with encryption/decryption
-     *
-     * @var    string
-     * @since  1.4.0
-     */
-    private $nonce;
-
-    /**
      * Method to decrypt a data string.
      *
      * @param   string  $data  The encrypted string to decrypt.
@@ -52,14 +44,18 @@ class Sodium implements CipherInterface
             throw new InvalidKeyTypeException('sodium', $key->getType());
         }
 
-        if (!$this->nonce) {
-            throw new DecryptionException('Missing nonce to decrypt data');
+        // The nonce is stored in front of the ciphertext
+        if (\strlen($data) < SODIUM_CRYPTO_BOX_NONCEBYTES) {
+            throw new DecryptionException('The encrypted data is too short to contain a nonce.');
         }
+
+        $nonce = substr($data, 0, SODIUM_CRYPTO_BOX_NONCEBYTES);
+        $data  = substr($data, SODIUM_CRYPTO_BOX_NONCEBYTES);
 
         try {
             $decrypted = sodium_crypto_box_open(
                 $data,
-                $this->nonce,
+                $nonce,
                 sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic())
             );
 
@@ -92,18 +88,17 @@ class Sodium implements CipherInterface
             throw new InvalidKeyTypeException('sodium', $key->getType());
         }
 
-        if (!$this->nonce) {
-            throw new EncryptionException('Missing nonce to decrypt data');
-        }
+        // Use a random nonce for every message and store it in front of the ciphertext
+        $nonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
 
         try {
-            return sodium_crypto_box(
+            return $nonce . sodium_crypto_box(
                 $data,
-                $this->nonce,
+                $nonce,
                 sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic())
             );
         } catch (\SodiumException $exception) {
-            throw new EncryptionException('Could not encrypt file.', $exception->getCode(), $exception);
+            throw new EncryptionException('Could not encrypt data.', $exception->getCode(), $exception);
         }
     }
 
@@ -141,19 +136,5 @@ class Sodium implements CipherInterface
     {
         // Part of PHP since 7.2
         return true;
-    }
-
-    /**
-     * Set the nonce to use for encrypting/decrypting messages
-     *
-     * @param   string  $nonce  The message nonce
-     *
-     * @return  void
-     *
-     * @since   1.4.0
-     */
-    public function setNonce($nonce)
-    {
-        $this->nonce = $nonce;
     }
 }
