@@ -9,6 +9,8 @@ namespace Joomla\Crypt\Tests\Cipher;
 
 use Defuse\Crypto\Key as DefuseKey;
 use Joomla\Crypt\Cipher\Crypto as CryptoCipher;
+use Joomla\Crypt\Exception\DecryptionException;
+use Joomla\Crypt\Exception\InvalidKeyTypeException;
 use Joomla\Crypt\Key;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -95,5 +97,70 @@ class CryptoTest extends TestCase
 
         // Assert the key is of the correct type.
         $this->assertSame('crypto', $key->getType());
+    }
+
+    /**
+     * @testdox  Encrypting with a key of the wrong type is rejected
+     */
+    public function testEncryptRejectsAKeyOfTheWrongType()
+    {
+        $cipher = new CryptoCipher();
+
+        $this->expectException(InvalidKeyTypeException::class);
+
+        $cipher->encrypt('data', new Key('wrong', 'private', 'public'));
+    }
+
+    /**
+     * @testdox  Decrypting with a key of the wrong type is rejected
+     */
+    public function testDecryptRejectsAKeyOfTheWrongType()
+    {
+        $cipher = new CryptoCipher();
+
+        $this->expectException(InvalidKeyTypeException::class);
+
+        $cipher->decrypt('data', new Key('wrong', 'private', 'public'));
+    }
+
+    /**
+     * @testdox  A tampered ciphertext is rejected rather than silently decrypted
+     */
+    public function testDecryptRejectsTamperedData()
+    {
+        $cipher = new CryptoCipher();
+        $key    = $cipher->generateKey();
+
+        $encrypted = $cipher->encrypt('The quick brown fox', $key);
+
+        // Flip the last byte of the ciphertext.
+        $encrypted[\strlen($encrypted) - 1] = $encrypted[\strlen($encrypted) - 1] === 'a' ? 'b' : 'a';
+
+        $this->expectException(DecryptionException::class);
+        $this->expectExceptionMessage('DANGER! DANGER! The ciphertext has been tampered with!');
+
+        $cipher->decrypt($encrypted, $key);
+    }
+
+    /**
+     * @testdox  Decrypting with a different key is rejected
+     */
+    public function testDecryptRejectsTheWrongKey()
+    {
+        $cipher = new CryptoCipher();
+
+        $encrypted = $cipher->encrypt('The quick brown fox', $cipher->generateKey());
+
+        $this->expectException(DecryptionException::class);
+
+        $cipher->decrypt($encrypted, $cipher->generateKey());
+    }
+
+    /**
+     * @testdox  The cipher reports itself as supported in this environment
+     */
+    public function testIsSupported()
+    {
+        $this->assertTrue(CryptoCipher::isSupported());
     }
 }

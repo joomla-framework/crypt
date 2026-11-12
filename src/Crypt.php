@@ -43,18 +43,18 @@ class Crypt
      * Object Constructor takes an optional key to be used for encryption/decryption. If no key is given then the
      * secret word from the configuration object is used.
      *
-     * @param   ?CipherInterface  $cipher  The encryption cipher object.
-     * @param   ?Key              $key     The encryption key[/pair)].
+     * @param   CipherInterface  $cipher  The encryption cipher object.
+     * @param   Key              $key     The encryption key[/pair)].
      *
      * @since   1.0
      */
-    public function __construct(?CipherInterface $cipher = null, ?Key $key = null)
+    public function __construct(CipherInterface $cipher, Key $key)
     {
         // Set the encryption cipher.
-        $this->cipher = $cipher ?: new Crypto();
+        $this->cipher = $cipher;
 
         // Set the encryption key[/pair)].
-        $this->key = $key ?: $this->generateKey();
+        $this->key = $key;
     }
 
     /**
