@@ -7,10 +7,13 @@
 
 namespace Joomla\Crypt\Tests;
 
+use Joomla\Crypt\Cipher\Crypto;
 use Joomla\Crypt\CipherInterface;
 use Joomla\Crypt\Crypt;
 use Joomla\Crypt\Key;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -143,5 +146,51 @@ class CryptTest extends TestCase
             $length,
             \strlen(Crypt::genRandomBytes($length))
         );
+    }
+
+    /**
+     * Constructor arguments that rely on the deprecated defaults
+     *
+     * @return  array
+     */
+    public static function dataDeprecatedConstructorArguments(): array
+    {
+        return [
+            'no arguments'  => [false, false],
+            'no key'        => [true, false],
+            'no cipher'     => [false, true],
+        ];
+    }
+
+    /**
+     * @testdox  Omitting the cipher or the key triggers a deprecation
+     *
+     * @param    boolean  $withCipher  Whether to pass a cipher
+     * @param    boolean  $withKey     Whether to pass a key
+     */
+    #[AllowMockObjectsWithoutExpectations]
+    #[DataProvider('dataDeprecatedConstructorArguments')]
+    public function testConstructorWithoutCipherOrKeyTriggersDeprecation(bool $withCipher, bool $withKey)
+    {
+        $cipher = new Crypto();
+
+        $this->expectUserDeprecationMessage(
+            'Since joomla/crypt __DEPLOY_VERSION__: Calling Joomla\Crypt\Crypt::__construct() without a cipher and a key is deprecated.'
+            . ' Both arguments will be required in 5.0.'
+        );
+
+        new Crypt($withCipher ? $cipher : null, $withKey ? $cipher->generateKey() : null);
+    }
+
+    /**
+     * @testdox  The deprecated defaults still use the Crypto cipher with a generated key
+     */
+    #[AllowMockObjectsWithoutExpectations]
+    #[IgnoreDeprecations]
+    public function testConstructorDefaultsStillWork()
+    {
+        $crypt = new Crypt();
+
+        $this->assertSame('data', $crypt->decrypt($crypt->encrypt('data')));
     }
 }

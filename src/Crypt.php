@@ -43,13 +43,22 @@ class Crypt
      * Object Constructor takes an optional key to be used for encryption/decryption. If no key is given then the
      * secret word from the configuration object is used.
      *
-     * @param   ?CipherInterface  $cipher  The encryption cipher object.
-     * @param   ?Key              $key     The encryption key[/pair)].
+     * @param   ?CipherInterface  $cipher  The encryption cipher object. Omitting it is deprecated.
+     * @param   ?Key              $key     The encryption key[/pair)]. Omitting it is deprecated.
      *
      * @since   1.0
      */
     public function __construct(?CipherInterface $cipher = null, ?Key $key = null)
     {
+        if ($cipher === null || $key === null) {
+            trigger_deprecation(
+                'joomla/crypt',
+                '__DEPLOY_VERSION__',
+                'Calling %s() without a cipher and a key is deprecated. Both arguments will be required in 5.0.',
+                __METHOD__
+            );
+        }
+
         // Set the encryption cipher.
         $this->cipher = $cipher ?: new Crypto();
 

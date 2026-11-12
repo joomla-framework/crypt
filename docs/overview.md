@@ -45,6 +45,11 @@ $ciphertext = $crypt->encrypt('some secret value');
 $plaintext  = $crypt->decrypt($ciphertext);
 ```
 
+Always pass both the cipher and the key to `Crypt`. Omitting either is deprecated since 4.1 and
+triggers an `E_USER_DEPRECATED` notice; both will be required in 5.0. Without a cipher, `Crypt`
+falls back to `Crypto`; without a key, it generates a new one that is never stored, so data
+encrypted with it cannot be decrypted by any other instance.
+
 To use a stored key later, rebuild the `Key` object with the same type:
 
 ```php
