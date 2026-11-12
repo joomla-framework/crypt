@@ -65,7 +65,7 @@ class OpenSSL implements CipherInterface
      * @throws  DecryptionException if the data cannot be decrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
-    public function decrypt($data, Key $key)
+    public function decrypt($data, #[\SensitiveParameter] Key $key)
     {
         // Validate key.
         if ($key->getType() !== 'openssl') {
@@ -93,7 +93,7 @@ class OpenSSL implements CipherInterface
      * @throws  EncryptionException if the data cannot be encrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
-    public function encrypt($data, Key $key)
+    public function encrypt($data, #[\SensitiveParameter] Key $key)
     {
         // Validate key.
         if ($key->getType() !== 'openssl') {
@@ -119,7 +119,7 @@ class OpenSSL implements CipherInterface
      * @since   2.0.0
      * @throws  InvalidKeyException if the key cannot be generated
      */
-    public function generateKey(array $options = [])
+    public function generateKey(#[\SensitiveParameter] array $options = [])
     {
         $passphrase = $options['passphrase'] ?? false;
 

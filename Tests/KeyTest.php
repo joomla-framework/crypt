@@ -89,4 +89,34 @@ class KeyTest extends TestCase
     {
         $this->assertSame($this->type, $this->object->getType());
     }
+
+    /**
+     * @testdox  Debugging output does not contain the key material
+     */
+    public function testDebugOutputIsRedacted()
+    {
+        $key = new Key('test', 'secret-private-material', 'secret-public-material');
+
+        ob_start();
+        var_dump($key);
+        $dump = ob_get_clean();
+
+        $printed = print_r($key, true);
+
+        foreach ([$dump, $printed] as $output) {
+            $this->assertStringContainsString('test', $output);
+            $this->assertStringNotContainsString('secret-', $output);
+        }
+    }
+
+    /**
+     * @testdox  The private key is not exposed in stack traces
+     */
+    public function testPrivateKeyIsSensitiveParameter()
+    {
+        $parameter = (new \ReflectionMethod(Key::class, '__construct'))->getParameters()[1];
+
+        $this->assertSame('private', $parameter->getName());
+        $this->assertCount(1, $parameter->getAttributes(\SensitiveParameter::class));
+    }
 }

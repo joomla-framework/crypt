@@ -164,6 +164,18 @@ $b = $cipher->generateKey(['passphrase' => '/var/www/keys/tenant-b.dat']);
 If you must keep this cipher, pass the secret itself rather than a path, make sure it is at least
 as long as the method's key size, and generate it with `random_bytes()`.
 
+## Keeping key material out of logs
+
+`Key` hides its private and public parts from `var_dump()`, `print_r()` and other debugging output
+(`__debugInfo()` shows only the type). The parameters that carry key material — the `Key`
+constructor's `$private`, the `$key` of `Crypt::__construct()`, `Crypt::setKey()` and the ciphers'
+`encrypt()`/`decrypt()`, and the `$options` of `OpenSSL::generateKey()` — are marked
+`#[\SensitiveParameter]`, so PHP replaces them in stack traces.
+
+A `Key` can still be serialized, and the result contains the private key in clear text. Do not put
+`Key` objects into sessions, caches or anything else that is serialized; store the private key in
+your secret storage and rebuild the `Key` from it.
+
 ## Not part of this package
 
 * No password hashing — that lives in `joomla/authentication` (`Password\BCryptHandler` and the

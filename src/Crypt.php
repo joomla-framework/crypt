@@ -48,7 +48,7 @@ class Crypt
      *
      * @since   1.0
      */
-    public function __construct(?CipherInterface $cipher = null, ?Key $key = null)
+    public function __construct(?CipherInterface $cipher = null, #[\SensitiveParameter] ?Key $key = null)
     {
         // Set the encryption cipher.
         $this->cipher = $cipher ?: new Crypto();
@@ -116,7 +116,7 @@ class Crypt
      *
      * @since   1.0
      */
-    public function setKey(Key $key)
+    public function setKey(#[\SensitiveParameter] Key $key)
     {
         $this->key = $key;
 
