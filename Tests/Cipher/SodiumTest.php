@@ -8,6 +8,9 @@
 namespace Joomla\Crypt\Tests\Cipher;
 
 use Joomla\Crypt\Cipher\Sodium;
+use Joomla\Crypt\Exception\DecryptionException;
+use Joomla\Crypt\Exception\EncryptionException;
+use Joomla\Crypt\Exception\InvalidKeyTypeException;
 use Joomla\Crypt\Key;
 use ParagonIE\Sodium\Compat;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -98,5 +101,102 @@ class SodiumTest extends TestCase
 
         // Assert the key is of the correct type.
         $this->assertSame('sodium', $key->getType());
+    }
+
+    /**
+     * @testdox  Encrypting with a key of the wrong type is rejected
+     */
+    public function testEncryptRejectsAKeyOfTheWrongType()
+    {
+        $cipher = new Sodium();
+        $cipher->setNonce(Compat::randombytes_buf(Compat::CRYPTO_BOX_NONCEBYTES));
+
+        $this->expectException(InvalidKeyTypeException::class);
+
+        $cipher->encrypt('data', new Key('wrong', 'private', 'public'));
+    }
+
+    /**
+     * @testdox  Decrypting with a key of the wrong type is rejected
+     */
+    public function testDecryptRejectsAKeyOfTheWrongType()
+    {
+        $cipher = new Sodium();
+        $cipher->setNonce(Compat::randombytes_buf(Compat::CRYPTO_BOX_NONCEBYTES));
+
+        $this->expectException(InvalidKeyTypeException::class);
+
+        $cipher->decrypt('data', new Key('wrong', 'private', 'public'));
+    }
+
+    /**
+     * @testdox  Encrypting without a nonce fails instead of using a default
+     */
+    public function testEncryptRequiresANonce()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $this->expectException(EncryptionException::class);
+
+        $cipher->encrypt('data', $key);
+    }
+
+    /**
+     * @testdox  Decrypting without a nonce fails instead of using a default
+     */
+    public function testDecryptRequiresANonce()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $this->expectException(DecryptionException::class);
+
+        $cipher->decrypt('data', $key);
+    }
+
+    /**
+     * @testdox  A tampered ciphertext is rejected rather than silently decrypted
+     */
+    public function testDecryptRejectsTamperedData()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $cipher->setNonce(Compat::randombytes_buf(Compat::CRYPTO_BOX_NONCEBYTES));
+
+        $encrypted = $cipher->encrypt('The quick brown fox', $key);
+
+        // Flip the last byte of the ciphertext.
+        $encrypted[\strlen($encrypted) - 1] = $encrypted[\strlen($encrypted) - 1] === 'a' ? 'b' : 'a';
+
+        $this->expectException(DecryptionException::class);
+
+        $cipher->decrypt($encrypted, $key);
+    }
+
+    /**
+     * @testdox  Decrypting with a different key is rejected
+     */
+    public function testDecryptRejectsTheWrongKey()
+    {
+        $cipher = new Sodium();
+        $nonce  = Compat::randombytes_buf(Compat::CRYPTO_BOX_NONCEBYTES);
+
+        $cipher->setNonce($nonce);
+
+        $encrypted = $cipher->encrypt('The quick brown fox', $cipher->generateKey());
+
+        $this->expectException(DecryptionException::class);
+
+        $cipher->decrypt($encrypted, $cipher->generateKey());
+    }
+
+    /**
+     * @testdox  The cipher reports itself as supported in this environment
+     */
+    public function testIsSupported()
+    {
+        $this->assertTrue(Sodium::isSupported());
     }
 }

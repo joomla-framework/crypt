@@ -8,6 +8,9 @@
 namespace Joomla\Crypt\Tests\Cipher;
 
 use Joomla\Crypt\Cipher\OpenSSL;
+use Joomla\Crypt\Exception\DecryptionException;
+use Joomla\Crypt\Exception\InvalidKeyException;
+use Joomla\Crypt\Exception\InvalidKeyTypeException;
 use Joomla\Crypt\Key;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -96,5 +99,87 @@ class OpenSSLTest extends TestCase
 
         // Assert the key is of the correct type.
         $this->assertSame('openssl', $key->getType());
+    }
+
+    /**
+     * @testdox  Generating a key without a passphrase file is rejected
+     */
+    public function testGenerateKeyRequiresAPassphrase()
+    {
+        $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
+
+        $this->expectException(InvalidKeyException::class);
+        $this->expectExceptionMessage('Missing passphrase file');
+
+        $cipher->generateKey();
+    }
+
+    /**
+     * @testdox  Encrypting with a key of the wrong type is rejected
+     */
+    public function testEncryptRejectsAKeyOfTheWrongType()
+    {
+        $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
+
+        $this->expectException(InvalidKeyTypeException::class);
+
+        $cipher->encrypt('data', new Key('wrong', 'private', 'public'));
+    }
+
+    /**
+     * @testdox  Decrypting with a key of the wrong type is rejected
+     */
+    public function testDecryptRejectsAKeyOfTheWrongType()
+    {
+        $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
+
+        $this->expectException(InvalidKeyTypeException::class);
+
+        $cipher->decrypt('data', new Key('wrong', 'private', 'public'));
+    }
+
+    /**
+     * @testdox  Decrypting with a different passphrase does not return the original data
+     *
+     * Note: the passphrase is used verbatim as the OpenSSL key, and aes-128-cbc only consumes its
+     * first 16 bytes. The two values below therefore have to differ within that prefix - two
+     * passphrase *file paths* in the same directory would not.
+     */
+    public function testDecryptWithTheWrongPassphraseDoesNotReturnTheData()
+    {
+        $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
+
+        $encrypted = $cipher->encrypt('The quick brown fox', new Key('openssl', 'passphrase-one', 'unused'));
+
+        $wrongKey = new Key('openssl', 'a-totally-different-passphrase', 'unused');
+
+        try {
+            $this->assertNotSame('The quick brown fox', $cipher->decrypt($encrypted, $wrongKey));
+        } catch (DecryptionException $e) {
+            // Failing outright is the other acceptable outcome.
+            $this->assertInstanceOf(DecryptionException::class, $e);
+        }
+    }
+
+    /**
+     * @testdox  A different initialisation vector produces different ciphertext
+     */
+    public function testTheInitialisationVectorAffectsTheCiphertext()
+    {
+        $key = (new OpenSSL('1234567890123456', 'aes-128-cbc'))
+            ->generateKey(['passphrase' => __DIR__ . '/stubs/openssl-passphrase.dat']);
+
+        $first  = (new OpenSSL('1234567890123456', 'aes-128-cbc'))->encrypt('The quick brown fox', $key);
+        $second = (new OpenSSL('6543210987654321', 'aes-128-cbc'))->encrypt('The quick brown fox', $key);
+
+        $this->assertNotSame($first, $second);
+    }
+
+    /**
+     * @testdox  The cipher reports itself as supported in this environment
+     */
+    public function testIsSupported()
+    {
+        $this->assertTrue(OpenSSL::isSupported());
     }
 }
