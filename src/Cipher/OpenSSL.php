@@ -14,6 +14,7 @@ use Joomla\Crypt\Exception\DecryptionException;
 use Joomla\Crypt\Exception\EncryptionException;
 use Joomla\Crypt\Exception\InvalidKeyException;
 use Joomla\Crypt\Exception\InvalidKeyTypeException;
+use Joomla\Crypt\Exception\UnsupportedCipherException;
 use Joomla\Crypt\Key;
 
 /**
@@ -64,9 +65,14 @@ class OpenSSL implements CipherInterface
      * @since   2.0.0
      * @throws  DecryptionException if the data cannot be decrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function decrypt($data, Key $key)
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Validate key.
         if ($key->getType() !== 'openssl') {
             throw new InvalidKeyTypeException('openssl', $key->getType());
@@ -92,9 +98,14 @@ class OpenSSL implements CipherInterface
      * @since   2.0.0
      * @throws  EncryptionException if the data cannot be encrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function encrypt($data, Key $key)
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Validate key.
         if ($key->getType() !== 'openssl') {
             throw new InvalidKeyTypeException('openssl', $key->getType());
@@ -118,9 +129,14 @@ class OpenSSL implements CipherInterface
      *
      * @since   2.0.0
      * @throws  InvalidKeyException if the key cannot be generated
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function generateKey(array $options = [])
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         $passphrase = $options['passphrase'] ?? false;
 
         if ($passphrase === false) {

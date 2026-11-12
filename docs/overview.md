@@ -81,7 +81,7 @@ try {
 | `DecryptionException` | Decryption failed or the ciphertext was modified |
 | `InvalidKeyException` | A key could not be generated |
 | `InvalidKeyTypeException` | The key type does not match the cipher |
-| `UnsupportedCipherException` | Declared for unsupported environments, but never actually thrown |
+| `UnsupportedCipherException` | The cipher is not supported in this environment (see below) |
 
 Check support before choosing a cipher:
 
@@ -91,8 +91,17 @@ if (!Crypto::isSupported()) {
 }
 ```
 
-`Sodium::isSupported()` returns `true` unconditionally rather than checking that the extension is
-present, so verify with `extension_loaded('sodium')` yourself if that matters.
+Since 4.1 `encrypt()`, `decrypt()` and `generateKey()` of every cipher throw
+`UnsupportedCipherException` when `isSupported()` is `false`, instead of failing with a PHP error:
+
+| Cipher | `isSupported()` is `true` when |
+|---|---|
+| `Crypto` | `defuse/php-encryption` is installed and its runtime self-test passes |
+| `Sodium` | the `sodium_*` functions exist (ext-sodium, or `paragonie/sodium_compat`) |
+| `OpenSSL` | ext-openssl is loaded |
+
+This includes `new Crypt()` without a cipher, which falls back to `Crypto` and generates a key: without
+`defuse/php-encryption` it throws `UnsupportedCipherException`.
 
 ## Random bytes
 
