@@ -103,8 +103,8 @@ class Crypto implements CipherInterface
             throw new InvalidKeyException('Cannot safely create a key', $ex->getCode(), $ex);
         }
 
-        // Create the new encryption key object.
-        return new Key('crypto', $public->saveToAsciiSafeString(), $public->getRawBytes());
+        // Create the new encryption key object. The cipher is symmetric, so there is no public part.
+        return new Key('crypto', $public->saveToAsciiSafeString(), '');
     }
 
     /**

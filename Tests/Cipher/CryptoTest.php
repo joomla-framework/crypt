@@ -90,8 +90,11 @@ class CryptoTest extends TestCase
         // Assert that the key is the correct type.
         $this->assertInstanceOf(Key::class, $key);
 
-        // Assert the public key is the expected length
-        $this->assertSame(DefuseKey::KEY_BYTE_SIZE, Binary::strlen($key->getPublic()));
+        // Assert the key has no public part, as the raw key bytes must not be exposed through getPublic()
+        $this->assertSame('', $key->getPublic());
+
+        // Assert the private key is a usable key
+        $this->assertInstanceOf(DefuseKey::class, DefuseKey::loadFromAsciiSafeString($key->getPrivate()));
 
         // Assert the key is of the correct type.
         $this->assertSame('crypto', $key->getType());
