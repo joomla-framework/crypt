@@ -9,8 +9,10 @@ namespace Joomla\Crypt\Tests\Cipher;
 
 use Defuse\Crypto\Key as DefuseKey;
 use Joomla\Crypt\Cipher\Crypto as CryptoCipher;
+use Joomla\Crypt\Exception\InvalidKeyException;
 use Joomla\Crypt\Key;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Polyfill\Util\Binary;
 
@@ -74,6 +76,29 @@ class CryptoTest extends TestCase
 
         // Assert the decrypted string is the same value we started with
         $this->assertSame($data, $decrypted);
+    }
+
+    /**
+     * @testdox  A malformed key is rejected with InvalidKeyException without exposing the key
+     *
+     * @param   string  $method  The cipher method to call
+     */
+    #[TestWith(['encrypt'])]
+    #[TestWith(['decrypt'])]
+    public function testMalformedKeyIsRejectedWithoutExposingIt(string $method)
+    {
+        $exceptionIgnoreArgs = ini_set('zend.exception_ignore_args', '0');
+
+        try {
+            (new CryptoCipher())->$method('data', new Key('crypto', 'not-a-key-SECRET-MATERIAL', ''));
+
+            $this->fail('Expected an InvalidKeyException');
+        } catch (InvalidKeyException $e) {
+            $this->assertNull($e->getPrevious());
+            $this->assertStringNotContainsString('SECRET-MATERIAL', (string) $e);
+        } finally {
+            ini_set('zend.exception_ignore_args', $exceptionIgnoreArgs);
+        }
     }
 
     /**
