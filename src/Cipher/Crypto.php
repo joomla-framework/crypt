@@ -40,7 +40,7 @@ class Crypto implements CipherInterface
      * @throws  DecryptionException if the data cannot be decrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
-    public function decrypt($data, Key $key)
+    public function decrypt(string $data, Key $key): string
     {
         // Validate key.
         if ($key->getType() !== 'crypto') {
@@ -69,7 +69,7 @@ class Crypto implements CipherInterface
      * @throws  EncryptionException if the data cannot be encrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
-    public function encrypt($data, Key $key)
+    public function encrypt(string $data, Key $key): string
     {
         // Validate key.
         if ($key->getType() !== 'crypto') {
@@ -94,7 +94,7 @@ class Crypto implements CipherInterface
      * @since   2.0.0
      * @throws  InvalidKeyException if the key cannot be generated
      */
-    public function generateKey(array $options = [])
+    public function generateKey(array $options = []): Key
     {
         // Generate the encryption key.
         try {
