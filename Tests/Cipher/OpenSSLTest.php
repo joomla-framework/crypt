@@ -76,6 +76,21 @@ class OpenSSLTest extends TestCase
     }
 
     /**
+     * @testdox  Generating a key without a passphrase reports the missing option
+     */
+    public function testGenerateKeyRequiresAPassphrase()
+    {
+        $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
+
+        $this->expectException(InvalidKeyException::class);
+        $this->expectExceptionMessage(
+            "The 'passphrase' option is missing. Its value is used as the key itself, not as a file path."
+        );
+
+        $cipher->generateKey();
+    }
+
+    /**
      * @testdox  Validates keys are correctly generated
      *
      * @covers   \Joomla\Crypt\Cipher\OpenSSL
@@ -97,20 +112,5 @@ class OpenSSLTest extends TestCase
 
         // Assert the key is of the correct type.
         $this->assertSame('openssl', $key->getType());
-    }
-
-    /**
-     * @testdox  Generating a key without a passphrase reports the missing option
-     */
-    public function testGenerateKeyRequiresAPassphrase()
-    {
-        $cipher = new OpenSSL('1234567890123456', 'aes-128-cbc');
-
-        $this->expectException(InvalidKeyException::class);
-        $this->expectExceptionMessage(
-            "The 'passphrase' option is missing. Its value is used as the key itself, not as a file path."
-        );
-
-        $cipher->generateKey();
     }
 }
