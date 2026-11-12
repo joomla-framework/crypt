@@ -28,6 +28,8 @@ class Sodium implements CipherInterface
     /**
      * The message nonce to be used with encryption/decryption
      *
+     * When no nonce is set, a random nonce is generated for every message and stored in front of the ciphertext.
+     *
      * @var    string
      * @since  1.4.0
      */
@@ -52,14 +54,27 @@ class Sodium implements CipherInterface
             throw new InvalidKeyTypeException('sodium', $key->getType());
         }
 
-        if (!$this->nonce) {
-            throw new DecryptionException('Missing nonce to decrypt data');
+        if ($this->nonce) {
+            // Data encrypted with a nonce set through the deprecated setNonce()
+            $nonce = $this->nonce;
+        } else {
+            // The nonce is stored in front of the ciphertext
+            if (\strlen($data) < SODIUM_CRYPTO_BOX_NONCEBYTES) {
+                throw new DecryptionException('The encrypted data is too short to contain a nonce.');
+            }
+
+            $nonce = substr($data, 0, SODIUM_CRYPTO_BOX_NONCEBYTES);
+            $data  = substr($data, SODIUM_CRYPTO_BOX_NONCEBYTES);
+        }
+
+        if (\strlen($nonce) !== SODIUM_CRYPTO_BOX_NONCEBYTES) {
+            throw new DecryptionException(\sprintf('The nonce must be %d bytes long.', SODIUM_CRYPTO_BOX_NONCEBYTES));
         }
 
         try {
             $decrypted = sodium_crypto_box_open(
                 $data,
-                $this->nonce,
+                $nonce,
                 sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic())
             );
 
@@ -92,18 +107,22 @@ class Sodium implements CipherInterface
             throw new InvalidKeyTypeException('sodium', $key->getType());
         }
 
-        if (!$this->nonce) {
-            throw new EncryptionException('Missing nonce to decrypt data');
+        // Without a nonce set through the deprecated setNonce(), use a random nonce and store it with the ciphertext
+        $nonce  = $this->nonce ?: random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
+        $prefix = $this->nonce ? '' : $nonce;
+
+        if (\strlen($nonce) !== SODIUM_CRYPTO_BOX_NONCEBYTES) {
+            throw new EncryptionException(\sprintf('The nonce must be %d bytes long.', SODIUM_CRYPTO_BOX_NONCEBYTES));
         }
 
         try {
-            return sodium_crypto_box(
+            return $prefix . sodium_crypto_box(
                 $data,
-                $this->nonce,
+                $nonce,
                 sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic())
             );
         } catch (\SodiumException $exception) {
-            throw new EncryptionException('Could not encrypt file.', $exception->getCode(), $exception);
+            throw new EncryptionException('Could not encrypt data.', $exception->getCode(), $exception);
         }
     }
 
@@ -146,14 +165,26 @@ class Sodium implements CipherInterface
     /**
      * Set the nonce to use for encrypting/decrypting messages
      *
+     * Once a nonce is set, it is used for every message and not stored with the ciphertext. Reusing a nonce with the
+     * same key is insecure. Without a nonce, encrypt() generates a random one per message.
+     *
      * @param   string  $nonce  The message nonce
      *
      * @return  void
      *
      * @since   1.4.0
+     * @deprecated  5.0  Do not set a nonce; encrypt() generates a random nonce for every message. Only use this method
+     *                   to decrypt data that was encrypted with a fixed nonce.
      */
     public function setNonce($nonce)
     {
+        trigger_deprecation(
+            'joomla/crypt',
+            '__DEPLOY_VERSION__',
+            '%s() is deprecated and will be removed in 5.0. Do not set a nonce; encrypt() generates a random nonce for every message.',
+            __METHOD__
+        );
+
         $this->nonce = $nonce;
     }
 }

@@ -8,9 +8,12 @@
 namespace Joomla\Crypt\Tests\Cipher;
 
 use Joomla\Crypt\Cipher\Sodium;
+use Joomla\Crypt\Exception\DecryptionException;
+use Joomla\Crypt\Exception\EncryptionException;
 use Joomla\Crypt\Key;
 use ParagonIE\Sodium\Compat;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Polyfill\Util\Binary;
 
@@ -52,7 +55,7 @@ class SodiumTest extends TestCase
     }
 
     /**
-     * @testdox  Validates data is encrypted and decrypted correctly
+     * @testdox  Validates data is encrypted and decrypted correctly with a nonce set by setNonce()
      *
      * @param   string  $data  The decrypted data to validate
      *
@@ -60,6 +63,7 @@ class SodiumTest extends TestCase
      * @uses     \Joomla\Crypt\Key
      */
     #[DataProvider('dataStrings')]
+    #[IgnoreDeprecations]
     public function testDataEncryptionAndDecryption($data)
     {
         $cipher = new Sodium();
@@ -98,5 +102,113 @@ class SodiumTest extends TestCase
 
         // Assert the key is of the correct type.
         $this->assertSame('sodium', $key->getType());
+    }
+
+    /**
+     * @testdox  Validates data is encrypted and decrypted correctly with a random nonce per message
+     *
+     * @param   string  $data  The decrypted data to validate
+     */
+    #[DataProvider('dataStrings')]
+    public function testDataEncryptionAndDecryptionWithoutNonce($data)
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $encrypted = $cipher->encrypt($data, $key);
+
+        $this->assertNotSame($data, $encrypted);
+        $this->assertSame($data, (new Sodium())->decrypt($encrypted, $key));
+    }
+
+    /**
+     * @testdox  Encrypting the same message twice uses a different nonce each time
+     */
+    public function testEncryptUsesAFreshNonceForEveryMessage()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $first  = $cipher->encrypt('The quick brown fox', $key);
+        $second = $cipher->encrypt('The quick brown fox', $key);
+
+        $this->assertNotSame($first, $second);
+        $this->assertNotSame(substr($first, 0, SODIUM_CRYPTO_BOX_NONCEBYTES), substr($second, 0, SODIUM_CRYPTO_BOX_NONCEBYTES));
+
+        // The nonce is stored in front of the crypto_box ciphertext
+        $this->assertSame(
+            'The quick brown fox',
+            sodium_crypto_box_open(
+                substr($first, SODIUM_CRYPTO_BOX_NONCEBYTES),
+                substr($first, 0, SODIUM_CRYPTO_BOX_NONCEBYTES),
+                sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic())
+            )
+        );
+    }
+
+    /**
+     * @testdox  Data encrypted with a fixed nonce by earlier releases can still be decrypted
+     */
+    #[IgnoreDeprecations]
+    public function testDecryptDataEncryptedWithAFixedNonce()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+        $nonce  = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
+
+        $legacy = sodium_crypto_box(
+            'The quick brown fox',
+            $nonce,
+            sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic())
+        );
+
+        $cipher->setNonce($nonce);
+
+        $this->assertSame($legacy, $cipher->encrypt('The quick brown fox', $key));
+        $this->assertSame('The quick brown fox', $cipher->decrypt($legacy, $key));
+    }
+
+    /**
+     * @testdox  Setting a nonce triggers a deprecation
+     */
+    public function testSetNonceTriggersDeprecation()
+    {
+        $this->expectUserDeprecationMessage(
+            'Since joomla/crypt __DEPLOY_VERSION__: Joomla\Crypt\Cipher\Sodium::setNonce() is deprecated and will be removed in 5.0.'
+            . ' Do not set a nonce; encrypt() generates a random nonce for every message.'
+        );
+
+        (new Sodium())->setNonce(random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES));
+    }
+
+    /**
+     * @testdox  A nonce of the wrong length is rejected with a clear message
+     */
+    #[IgnoreDeprecations]
+    public function testEncryptRejectsANonceOfTheWrongLength()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $cipher->setNonce('too short');
+
+        $this->expectException(EncryptionException::class);
+        $this->expectExceptionMessage('The nonce must be 24 bytes long.');
+
+        $cipher->encrypt('data', $key);
+    }
+
+    /**
+     * @testdox  Data too short to contain a nonce is rejected
+     */
+    public function testDecryptRejectsDataWithoutNonce()
+    {
+        $cipher = new Sodium();
+        $key    = $cipher->generateKey();
+
+        $this->expectException(DecryptionException::class);
+        $this->expectExceptionMessage('The encrypted data is too short to contain a nonce.');
+
+        $cipher->decrypt('data', $key);
     }
 }

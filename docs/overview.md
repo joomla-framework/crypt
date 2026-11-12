@@ -105,7 +105,9 @@ URL, a database column or a header.
 
 ## The Sodium cipher
 
-`Cipher\Sodium` uses `sodium_crypto_box` and needs a nonce set before use:
+`Cipher\Sodium` uses `sodium_crypto_box`. It generates a random 24-byte nonce for every message and
+stores it in front of the ciphertext, so encrypting the same message twice gives two different
+results and `decrypt()` needs nothing but the key:
 
 ```php
 use Joomla\Crypt\Cipher\Sodium;
@@ -113,25 +115,28 @@ use Joomla\Crypt\Cipher\Sodium;
 $cipher = new Sodium();
 $key    = $cipher->generateKey();
 
-$nonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);   // 24 bytes
-$cipher->setNonce($nonce);
-
-$ciphertext = $cipher->encrypt('message', $key);
+$ciphertext = $cipher->encrypt('message', $key);   // nonce . crypto_box ciphertext
+$plaintext  = $cipher->decrypt($ciphertext, $key);
 ```
 
-Two things the package does not do for you, and both are essential:
+Before 4.1 the cipher had no nonce handling of its own: the nonce had to be set with `setNonce()`,
+was reused for every message of the instance and was not stored with the ciphertext. Reusing a
+nonce with the same key breaks XSalsa20-Poly1305 completely — it exposes the XOR of the plaintexts
+and undermines the authenticator.
 
-* **Generate the nonce.** There is no helper; you must produce 24 random bytes yourself.
-* **Vary it per message.** The nonce is stored on the cipher instance and reused for every
-  `encrypt()` call on it. Reusing a nonce with the same key breaks XSalsa20-Poly1305 completely —
-  it exposes the XOR of the plaintexts and undermines the authenticator. Create a fresh nonce for
-  each message and store it alongside the ciphertext:
+`setNonce()` is deprecated and will be removed in 5.0; calling it triggers an `E_USER_DEPRECATED`
+notice. While a nonce is set, the cipher behaves as before: it uses that nonce for every message and
+does not store it with the ciphertext. Only use it to decrypt data that was encrypted that way, and
+re-encrypt such data without a nonce:
 
 ```php
-$nonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
-$cipher->setNonce($nonce);
-$stored = base64_encode($nonce) . ':' . base64_encode($cipher->encrypt($message, $key));
+$legacy = new Sodium();
+$legacy->setNonce($storedNonce);
+
+$ciphertext = (new Sodium())->encrypt($legacy->decrypt($oldCiphertext, $key), $key);
 ```
+
+A nonce of the wrong length is rejected with an `EncryptionException` or `DecryptionException`.
 
 ## The OpenSSL cipher
 
