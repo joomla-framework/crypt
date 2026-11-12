@@ -16,7 +16,6 @@ use Joomla\Crypt\Exception\InvalidKeyException;
 use Joomla\Crypt\Exception\InvalidKeyTypeException;
 use Joomla\Crypt\Exception\UnsupportedCipherException;
 use Joomla\Crypt\Key;
-use ParagonIE\Sodium\Compat;
 
 /**
  * Cipher for sodium algorithm encryption, decryption and key generation.
