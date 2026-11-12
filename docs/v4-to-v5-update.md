@@ -9,7 +9,27 @@ breaking change has its own section below.
 <!-- Section: native parameter and return types -->
 
 
-<!-- Section: Sodium::setNonce() removed -->
+## `Sodium::setNonce()` removed
+
+`Cipher\Sodium::setNonce()`, deprecated in 4.1, is gone. Since 4.1 the cipher generates a random
+nonce for every message and stores it in front of the ciphertext; a nonce set with `setNonce()` was
+reused for every message, which is insecure with `crypto_box`.
+
+**What to change:**
+
+* Remove `setNonce()` calls. `encrypt()` and `decrypt()` need nothing but the key.
+* Data encrypted with a fixed nonce (with `setNonce()`) cannot be decrypted by the 5.x cipher.
+  Re-encrypt it while still on 4.x:
+
+  ```php
+  $legacy = new Sodium();
+  $legacy->setNonce($storedNonce);
+
+  $ciphertext = (new Sodium())->encrypt($legacy->decrypt($oldCiphertext, $key), $key);
+  ```
+
+  or decrypt it directly with `sodium_crypto_box_open($oldCiphertext, $storedNonce,
+  sodium_crypto_box_keypair_from_secretkey_and_publickey($key->getPrivate(), $key->getPublic()))`.
 
 
 ## Dependency changes

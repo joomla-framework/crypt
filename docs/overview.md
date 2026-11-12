@@ -119,24 +119,9 @@ $ciphertext = $cipher->encrypt('message', $key);   // nonce . crypto_box ciphert
 $plaintext  = $cipher->decrypt($ciphertext, $key);
 ```
 
-Before 4.1 the cipher had no nonce handling of its own: the nonce had to be set with `setNonce()`,
-was reused for every message of the instance and was not stored with the ciphertext. Reusing a
-nonce with the same key breaks XSalsa20-Poly1305 completely — it exposes the XOR of the plaintexts
-and undermines the authenticator.
-
-`setNonce()` is deprecated and will be removed in 5.0; calling it triggers an `E_USER_DEPRECATED`
-notice. While a nonce is set, the cipher behaves as before: it uses that nonce for every message and
-does not store it with the ciphertext. Only use it to decrypt data that was encrypted that way, and
-re-encrypt such data without a nonce:
-
-```php
-$legacy = new Sodium();
-$legacy->setNonce($storedNonce);
-
-$ciphertext = (new Sodium())->encrypt($legacy->decrypt($oldCiphertext, $key), $key);
-```
-
-A nonce of the wrong length is rejected with an `EncryptionException` or `DecryptionException`.
+Releases before 4.1 had no nonce handling of their own: the nonce had to be set with `setNonce()`,
+was reused for every message of the instance and was not stored with the ciphertext. `setNonce()`
+was removed in 5.0; see the [update guide](v4-to-v5-update.md) for migrating such data.
 
 ## The OpenSSL cipher
 
