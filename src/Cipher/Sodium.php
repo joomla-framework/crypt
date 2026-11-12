@@ -44,9 +44,14 @@ class Sodium implements CipherInterface
      * @since   1.4.0
      * @throws  DecryptionException if the data cannot be decrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function decrypt($data, Key $key)
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Validate key.
         if ($key->getType() !== 'sodium') {
             throw new InvalidKeyTypeException('sodium', $key->getType());
@@ -84,9 +89,14 @@ class Sodium implements CipherInterface
      * @since   1.4.0
      * @throws  EncryptionException if the data cannot be encrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function encrypt($data, Key $key)
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Validate key.
         if ($key->getType() !== 'sodium') {
             throw new InvalidKeyTypeException('sodium', $key->getType());
@@ -120,6 +130,10 @@ class Sodium implements CipherInterface
      */
     public function generateKey(array $options = [])
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         try {
             // Generate the encryption key.
             $pair = sodium_crypto_box_keypair();
@@ -139,8 +153,8 @@ class Sodium implements CipherInterface
      */
     public static function isSupported(): bool
     {
-        // Part of PHP since 7.2
-        return true;
+        // ext-sodium is optional; paragonie/sodium_compat provides the functions when it is missing
+        return \function_exists('sodium_crypto_box');
     }
 
     /**

@@ -19,6 +19,7 @@ use Joomla\Crypt\Exception\DecryptionException;
 use Joomla\Crypt\Exception\EncryptionException;
 use Joomla\Crypt\Exception\InvalidKeyException;
 use Joomla\Crypt\Exception\InvalidKeyTypeException;
+use Joomla\Crypt\Exception\UnsupportedCipherException;
 use Joomla\Crypt\Key;
 
 /**
@@ -39,9 +40,14 @@ class Crypto implements CipherInterface
      * @since   2.0.0
      * @throws  DecryptionException if the data cannot be decrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function decrypt($data, Key $key)
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Validate key.
         if ($key->getType() !== 'crypto') {
             throw new InvalidKeyTypeException('crypto', $key->getType());
@@ -68,9 +74,14 @@ class Crypto implements CipherInterface
      * @since   2.0.0
      * @throws  EncryptionException if the data cannot be encrypted
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function encrypt($data, Key $key)
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Validate key.
         if ($key->getType() !== 'crypto') {
             throw new InvalidKeyTypeException('crypto', $key->getType());
@@ -93,9 +104,14 @@ class Crypto implements CipherInterface
      *
      * @since   2.0.0
      * @throws  InvalidKeyException if the key cannot be generated
+     * @throws  UnsupportedCipherException if the cipher is not supported on the current environment
      */
     public function generateKey(array $options = [])
     {
+        if (!static::isSupported()) {
+            throw new UnsupportedCipherException(static::class);
+        }
+
         // Generate the encryption key.
         try {
             $public = DefuseKey::createNewRandomKey();
@@ -116,6 +132,11 @@ class Crypto implements CipherInterface
      */
     public static function isSupported(): bool
     {
+        // defuse/php-encryption is an optional dependency
+        if (!class_exists(DefuseCrypto::class)) {
+            return false;
+        }
+
         try {
             RuntimeTests::runtimeTest();
 
