@@ -124,7 +124,7 @@ class OpenSSL implements CipherInterface
         $passphrase = $options['passphrase'] ?? false;
 
         if ($passphrase === false) {
-            throw new InvalidKeyException('Missing passphrase file');
+            throw new InvalidKeyException("The 'passphrase' option is missing. Its value is used as the key itself, not as a file path.");
         }
 
         return new Key('openssl', $passphrase, 'unused');

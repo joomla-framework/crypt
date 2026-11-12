@@ -142,9 +142,9 @@ $stored = base64_encode($nonce) . ':' . base64_encode($cipher->encrypt($message,
 > stream reuse; the missing authentication means a modified ciphertext decrypts without complaint.
 > Use `Cipher\Crypto` instead.
 
-If you are stuck with it, one more detail matters. The option is called `passphrase` and the docs
-describe it as a passphrase file, but the value is never read as a file — it is handed to
-`openssl_encrypt()` as the key material verbatim:
+If you are stuck with it, one more detail matters. The option is called `passphrase`, and before 4.1 the
+error for a missing one called it a "passphrase file", but the value is never read as a file — it is
+handed to `openssl_encrypt()` as the key material verbatim:
 
 ```php
 $key = $cipher->generateKey(['passphrase' => '/path/to/secret.dat']);
