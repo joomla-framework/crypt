@@ -15,7 +15,7 @@ composer require joomla/crypt
 | `Joomla\Crypt\CipherInterface` | The cipher contract |
 | `Joomla\Crypt\Cipher\Crypto` | Wrapper around `defuse/php-encryption` — **the one to use** |
 | `Joomla\Crypt\Cipher\Sodium` | libsodium `crypto_box` |
-| `Joomla\Crypt\Cipher\OpenSSL` | ext-openssl — see the warning below |
+| `Joomla\Crypt\Cipher\OpenSSL` | ext-openssl — **deprecated**, see the warning below |
 | `Joomla\Crypt\Key` | Holds a key type plus the private and public key material |
 | `Joomla\Crypt\Exception\*` | `CryptExceptionInterface` and five concrete exceptions |
 
@@ -135,7 +135,8 @@ $stored = base64_encode($nonce) . ':' . base64_encode($cipher->encrypt($message,
 
 ## The OpenSSL cipher
 
-> **Do not use `Cipher\OpenSSL` for new work.** Its initialisation vector is fixed at construction
+> **Do not use `Cipher\OpenSSL` for new work.** It is deprecated since 4.1 and will be removed in 5.0;
+> creating an instance triggers an `E_USER_DEPRECATED` notice. Its initialisation vector is fixed at construction
 > and reused for every message, it applies no authentication to the ciphertext, and
 > `generateKey()` uses the supplied passphrase directly as the raw key with no derivation. A fixed
 > IV means identical plaintexts produce identical ciphertexts, and in a stream mode it means key

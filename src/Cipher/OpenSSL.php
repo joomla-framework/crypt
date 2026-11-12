@@ -19,7 +19,9 @@ use Joomla\Crypt\Key;
 /**
  * Joomla cipher for encryption, decryption and key generation via the openssl extension.
  *
- * @since  2.0.0
+ * @since       2.0.0
+ * @deprecated  5.0  Use \Joomla\Crypt\Cipher\Crypto instead. This cipher reuses the initialisation vector for every
+ *                   message, does not authenticate the ciphertext and uses the passphrase as the raw key.
  */
 class OpenSSL implements CipherInterface
 {
@@ -49,6 +51,14 @@ class OpenSSL implements CipherInterface
      */
     public function __construct(string $iv, string $method)
     {
+        trigger_deprecation(
+            'joomla/crypt',
+            '__DEPLOY_VERSION__',
+            'The %s class is deprecated and will be removed in 5.0. Use %s instead.',
+            self::class,
+            Crypto::class
+        );
+
         $this->iv     = $iv;
         $this->method = $method;
     }

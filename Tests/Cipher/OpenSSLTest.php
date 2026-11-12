@@ -10,11 +10,13 @@ namespace Joomla\Crypt\Tests\Cipher;
 use Joomla\Crypt\Cipher\OpenSSL;
 use Joomla\Crypt\Key;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Joomla\Crypt\Cipher\OpenSSL.
  */
+#[IgnoreDeprecations]
 class OpenSSLTest extends TestCase
 {
     /**
@@ -96,5 +98,18 @@ class OpenSSLTest extends TestCase
 
         // Assert the key is of the correct type.
         $this->assertSame('openssl', $key->getType());
+    }
+
+    /**
+     * @testdox  Instantiating the cipher triggers a deprecation
+     */
+    public function testConstructorTriggersDeprecation()
+    {
+        $this->expectUserDeprecationMessage(
+            'Since joomla/crypt __DEPLOY_VERSION__: The Joomla\Crypt\Cipher\OpenSSL class is deprecated and will be removed in 5.0.'
+            . ' Use Joomla\Crypt\Cipher\Crypto instead.'
+        );
+
+        new OpenSSL('1234567890123456', 'aes-128-cbc');
     }
 }
