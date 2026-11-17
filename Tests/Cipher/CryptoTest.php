@@ -12,7 +12,6 @@ use Joomla\Crypt\Cipher\Crypto as CryptoCipher;
 use Joomla\Crypt\Key;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Polyfill\Util\Binary;
 
 /**
  * Test class for \Joomla\Crypt\Cipher\Crypto.
@@ -91,7 +90,7 @@ class CryptoTest extends TestCase
         $this->assertInstanceOf(Key::class, $key);
 
         // Assert the public key is the expected length
-        $this->assertSame(DefuseKey::KEY_BYTE_SIZE, Binary::strlen($key->getPublic()));
+        $this->assertSame(DefuseKey::KEY_BYTE_SIZE, \strlen($key->getPublic()));
 
         // Assert the key is of the correct type.
         $this->assertSame('crypto', $key->getType());
