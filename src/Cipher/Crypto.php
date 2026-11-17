@@ -10,6 +10,8 @@
 namespace Joomla\Crypt\Cipher;
 
 use Defuse\Crypto\Crypto as DefuseCrypto;
+use Defuse\Crypto\Exception\BadFormatException;
+use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Defuse\Crypto\Key as DefuseKey;
@@ -38,6 +40,7 @@ class Crypto implements CipherInterface
      *
      * @since   2.0.0
      * @throws  DecryptionException if the data cannot be decrypted
+     * @throws  InvalidKeyException if the key is malformed
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
     public function decrypt($data, Key $key)
@@ -54,6 +57,11 @@ class Crypto implements CipherInterface
             throw new DecryptionException('DANGER! DANGER! The ciphertext has been tampered with!', $ex->getCode(), $ex);
         } catch (EnvironmentIsBrokenException $ex) {
             throw new DecryptionException('Cannot safely perform decryption', $ex->getCode(), $ex);
+        } catch (BadFormatException $ex) {
+            // The previous exception is not chained, its stack trace contains the key
+            throw new InvalidKeyException('The key is not a valid crypto key.', $ex->getCode());
+        } catch (CryptoException $ex) {
+            throw new DecryptionException('Failed to decrypt data', $ex->getCode());
         }
     }
 
@@ -67,6 +75,7 @@ class Crypto implements CipherInterface
      *
      * @since   2.0.0
      * @throws  EncryptionException if the data cannot be encrypted
+     * @throws  InvalidKeyException if the key is malformed
      * @throws  InvalidKeyTypeException if the key is not valid for the cipher
      */
     public function encrypt($data, Key $key)
@@ -81,6 +90,11 @@ class Crypto implements CipherInterface
             return DefuseCrypto::encrypt($data, DefuseKey::loadFromAsciiSafeString($key->getPrivate()));
         } catch (EnvironmentIsBrokenException $ex) {
             throw new EncryptionException('Cannot safely perform encryption', $ex->getCode(), $ex);
+        } catch (BadFormatException $ex) {
+            // The previous exception is not chained, its stack trace contains the key
+            throw new InvalidKeyException('The key is not a valid crypto key.', $ex->getCode());
+        } catch (CryptoException $ex) {
+            throw new EncryptionException('Unable to encrypt data', $ex->getCode());
         }
     }
 

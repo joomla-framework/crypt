@@ -79,7 +79,7 @@ try {
 |---|---|
 | `EncryptionException` | Encryption failed |
 | `DecryptionException` | Decryption failed or the ciphertext was modified |
-| `InvalidKeyException` | A key could not be generated |
+| `InvalidKeyException` | A key could not be generated, or (`Crypto`) the key is malformed |
 | `InvalidKeyTypeException` | The key type does not match the cipher |
 | `UnsupportedCipherException` | Declared for unsupported environments, but never actually thrown |
 
